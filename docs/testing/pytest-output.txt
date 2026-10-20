@@ -1,0 +1,36 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.13.9, pytest-9.1.1, pluggy-1.7.0 -- C:\Users\Tajri Tech\Desktop\fyp\files-final\fardnama\backend\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Tajri Tech\Desktop\fyp\files-final\fardnama\backend
+plugins: anyio-4.15.1
+collecting ... collected 21 items
+
+tests/test_hashing.py::test_sha256_hash_deterministic PASSED             [  4%]
+tests/test_hashing.py::test_sha256_hash_changes_on_single_bit_flip PASSED [  9%]
+tests/test_merkle.py::test_merkle_tree_single_leaf PASSED                [ 14%]
+tests/test_merkle.py::test_merkle_tree_odd_number_of_leaves PASSED       [ 19%]
+tests/test_merkle.py::test_merkle_root_changes_on_tamper PASSED          [ 23%]
+tests/test_merkle.py::test_merkle_tamper_detected_at_every_position PASSED [ 28%]
+tests/test_merkle.py::test_merkle_root_depends_on_order PASSED           [ 33%]
+tests/test_merkle.py::test_merkle_odd_node_is_not_duplicated PASSED      [ 38%]
+tests/test_merkle.py::test_merkle_empty_tree_is_defined_and_distinct PASSED [ 42%]
+tests/test_merkle.py::test_merkle_expected_root_for_two_leaves PASSED    [ 47%]
+tests/test_ocr.py::test_ocr_extracts_text_from_sample_screenshot PASSED  [ 52%]
+tests/test_ocr.py::test_ocr_invalid_bytes_raise_value_error PASSED       [ 57%]
+tests/test_ocr.py::test_ocr_missing_tesseract_raises_runtime_error_not_value_error PASSED [ 61%]
+tests/test_upload.py::test_upload_rejects_unsupported_file_type PASSED   [ 66%]
+tests/test_upload.py::test_upload_requires_consent PASSED                [ 71%]
+tests/test_upload.py::test_upload_image_returns_hash_and_ocr_status PASSED [ 76%]
+tests/test_upload.py::test_upload_corrupt_image_returns_400 PASSED       [ 80%]
+tests/test_upload.py::test_upload_empty_file_returns_400 PASSED          [ 85%]
+tests/test_upload.py::test_upload_oversize_file_returns_413 PASSED       [ 90%]
+tests/test_upload.py::test_upload_text_file_is_hashed_and_stored_unchanged PASSED [ 95%]
+tests/test_upload.py::test_missing_tesseract_is_503_not_a_decode_error PASSED [100%]
+
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\Tajri Tech\Desktop\fyp\files-final\fardnama\backend\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 21 passed, 1 warning in 2.26s ========================
