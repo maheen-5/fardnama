@@ -1,0 +1,21 @@
+flowchart TB
+  NEW["<span style='color:#FFFFFF'>anchor(caseCommitment, R3)<br/>registrar only</span>"]
+  subgraph C["EvidenceRegistry storage for one case — append-only"]
+    direction LR
+    K["caseCommitment<br/>= H(case_id ‖ case_salt)"]
+    A0["history[0]<br/>root R0 · block · time"]
+    A1["history[1]<br/>root R1 · block · time"]
+    A2["history[2]<br/>root R2 · block · time"]
+    A3["history[3]<br/>root R3 · block · time"]
+    K --> A0 --> A1 --> A2 --> A3
+  end
+  IDX["rootIndex[caseCommitment][R]<br/>= position + 1 (0 = never anchored)"]
+  EV["Event log: RootAnchored(caseCommitment, R, index, time)<br/>one event per anchor, never removed"]
+  NEW -->|"push new entry; R0–R2 untouched"| A3
+  A3 -.-> IDX
+  A3 -.-> EV
+  
+  classDef root fill:#7A3B2E,stroke:#55663A,stroke-width:2px
+  classDef leaf fill:#E1E8D3,stroke:#55663A,color:#22251A
+  class NEW root
+  class IDX,EV,A3 leaf

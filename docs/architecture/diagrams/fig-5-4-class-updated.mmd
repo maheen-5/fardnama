@@ -1,0 +1,104 @@
+classDiagram
+  direction TB
+  class User {
+    +UUID id
+    +string email
+    +string passwordHash
+    +datetime createdAt
+    +login()
+    +resetPassword()
+  }
+  class Case {
+    +UUID id
+    +UUID userId
+    +string title
+    +string status
+    +bytes caseSalt
+    +string wrappedCaseKeyRef
+    +string caseCommitment
+    +datetime createdAt
+    +addEvidence()
+    +getTimeline()
+  }
+  class Evidence {
+    +UUID id
+    +UUID caseId
+    +string fileType
+    +string sha256Original
+    +string sha256Copy
+    +string cidOriginal
+    +string cidCopy
+    +string cidExtractedText
+    +datetime uploadedAt
+    +computeHashes()
+    +encryptAndStore()
+    +extractText()
+  }
+  class CustodyEvent {
+    +UUID id
+    +UUID evidenceId
+    +int caseSeq
+    +string stage
+    +string outputHash
+    +string prevEntryHash
+    +string entryHash
+    +datetime timestamp
+    +verifyChain()
+  }
+  class CaseMerkleTree {
+    +UUID caseId
+    +string caseRoot
+    +int leafCount
+    +buildTree()
+    +getProof()
+    +verifyProof()
+  }
+  class ChainAnchor {
+    +int id
+    +UUID caseId
+    +string caseCommitment
+    +int anchorIndex
+    +string caseRoot
+    +int leafCount
+    +string txHash
+    +int blockNumber
+    +datetime anchoredAt
+    +anchorToChain()
+  }
+  class QuarterlyCheckpoint {
+    +int epoch
+    +string superRoot
+    +datetime proposedAt
+    +buildSuperRoot()
+  }
+  class Classification {
+    +UUID id
+    +UUID evidenceId
+    +string[] labels
+    +float confidence
+    +classify()
+  }
+  class SeverityAssessment {
+    +UUID id
+    +UUID caseId
+    +string level
+    +string rationale
+    +computeSeverity()
+  }
+  class Report {
+    +UUID id
+    +UUID caseId
+    +string pdfRef
+    +datetime generatedAt
+    +generate()
+  }
+  User "1" --> "many" Case : owns
+  Case "1" --> "many" Evidence : contains
+  Case "1" --> "1" SeverityAssessment : scored by
+  Case "1" --> "1" Report : compiled into
+  Case "1" --> "1" CaseMerkleTree : has one
+  Evidence "1" --> "many" Classification : analyzed as
+  Evidence "1" --> "many" CustodyEvent : produces
+  CustodyEvent "many" --> "1" CaseMerkleTree : leaves of
+  CaseMerkleTree "1" --> "many" ChainAnchor : anchored as (append-only)
+  ChainAnchor "many" ..> "1" QuarterlyCheckpoint : rolled up by (proposed)
