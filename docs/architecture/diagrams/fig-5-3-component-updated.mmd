@@ -1,0 +1,54 @@
+---
+config:
+  layout: elk
+---
+flowchart TB
+  subgraph PT["Presentation Tier"]
+    APP["Flutter App<br/>(EN/UR, RTL)"]
+  end
+  subgraph AT["API Tier — FastAPI"]
+    GW["API Gateway / Auth<br/>(RBAC)"]
+  end
+  subgraph BL["Business Logic Tier"]
+    EC["Evidence Collection<br/>Service"]
+    IF["Image Forensics Service<br/>(pHash + ELA)"]
+    OCR["OCR Service"]
+    CL["Classification Service"]
+    SV["Severity Scoring Service"]
+    RAG["RAG Legal-Mapping<br/>Service"]
+    TL["Timeline Service"]
+    RP["Report Generator<br/>Service"]
+    IL["Integrity Ledger Service<br/>(custody chain + per-<br/>case Merkle tree)"]
+    CC["Case Crypto Service<br/>(per-case keys, AES-256-<br/>GCM)"]
+    BG["Blockchain Gateway<br/>(web3 client)"]
+  end
+  subgraph DT["Data Tier"]
+    RD[("Redis Cache")]
+    PG[("PostgreSQL + pgvector<br/>metadata only")]
+    IPFS[("IPFS private node<br/>encrypted evidence")]
+    KS[("Key store<br/>wrapped case keys")]
+  end
+  subgraph BT["Blockchain Tier (local)"]
+    REG["EvidenceRegistry<br/>smart contract (Solidity)"]
+  end
+
+  APP <-->|HTTPS/JSON| GW
+  GW --> RD
+  GW --> EC
+  EC --> IF
+  EC --> OCR
+  OCR --> CL
+  CL --> SV
+  CL --> RAG
+  SV --> TL
+  TL --> RP
+  RAG --> RP
+  RAG --> PG
+  EC --> CC
+  CC -->|ciphertext| IPFS
+  CC -->|wrapped key| KS
+  EC -->|hashes, CIDs| PG
+  EC --> IL
+  IL -->|custody events| PG
+  IL -->|case root| BG
+  BG -->|anchor / verify| REG

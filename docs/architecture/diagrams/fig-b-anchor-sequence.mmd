@@ -1,0 +1,28 @@
+sequenceDiagram
+  actor Victim
+  participant App as Flutter App
+  participant API as FastAPI Backend
+  participant CC as Case Crypto
+  participant IPFS as IPFS (private node)
+  participant DB as Postgres (metadata)
+  participant L as Ledger Service
+  participant ETH as EvidenceRegistry (local)
+
+  Victim->>App: Select evidence file + consent
+  App->>API: POST /evidence/upload (file, case_id)
+  API->>API: sha256(original), derive copy, sha256(copy)
+  API->>CC: encrypt(original, copy) with case DEK
+  CC-->>API: ciphertexts (nonce + tag)
+  API->>IPFS: add(ciphertext) + pin
+  IPFS-->>API: cidOriginal, cidCopy
+  API->>DB: insert Evidence(hashes, CIDs, wrappedKeyRef)
+  API->>L: append custody events (INGEST, COPY, STORE, OCR, FORENSICS)
+  L->>L: entry_n = H(entry_n-1 ‖ stage ‖ output_hash ‖ ts)
+  L->>L: leaves L = H(0x00 ‖ case_salt ‖ entry), rebuild tree -> caseRoot_k
+  L->>DB: insert custody events
+  L->>ETH: anchor(caseCommitment, caseRoot_k)
+  ETH->>ETH: require(msg.sender == registrar), append to history
+  ETH-->>L: RootAnchored(caseCommitment, caseRoot_k, index k, time) + txHash
+  L->>DB: insert ChainAnchor(k, caseRoot_k, txHash, block)
+  API-->>App: 201 Created {evidenceId, hashes, cids, caseRoot, txHash}
+  App-->>Victim: Confirmation + anchor receipt
