@@ -1,0 +1,22 @@
+sequenceDiagram
+  actor V as Verifier (e.g. NCCIA)
+  participant API as FastAPI Backend
+  participant IPFS as IPFS (private node)
+  participant CC as Case Crypto
+  participant DB as Postgres (metadata)
+  participant L as Ledger Service
+  participant ETH as EvidenceRegistry (local)
+
+  V->>API: request item + proof (shared by victim)
+  API->>DB: load cid, sha256, custody events, latest anchor
+  API->>IPFS: cat(cid)
+  IPFS-->>API: ciphertext (CID re-derived from bytes)
+  API->>CC: decrypt with case DEK
+  CC-->>API: plaintext (GCM tag checked)
+  API->>API: sha256(plaintext) == recorded sha256 ?
+  API->>L: recompute custody chain + leaf + Merkle proof
+  L-->>API: caseRoot_k, proof path
+  API->>ETH: verify(caseCommitment, caseRoot_k)
+  ETH-->>API: (true, index k, anchoredAt)
+  API-->>V: item + leaf + proof + caseRoot_k + txHash
+  V->>ETH: independent verify(caseCommitment, caseRoot_k)

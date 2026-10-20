@@ -1,0 +1,38 @@
+flowchart TB
+  subgraph PT["Presentation Tier"]
+    APP["Flutter App<br/>(no long-lived keys)"]
+  end
+  subgraph AT["API Tier — FastAPI"]
+    GW["API Gateway / Auth<br/>(consent check)"]
+  end
+  subgraph BL["Business Logic Tier — integrity subsystem"]
+    EC["Evidence Collection<br/>Service"]
+    HS["Hashing Service<br/>(SHA-256 original + copy)"]
+    CC["Case Crypto Service<br/>(per-case DEK, AES-256-GCM)"]
+    ST["Storage / IPFS client<br/>(add, pin, cat, verify CID)"]
+    IL["Integrity Ledger Service<br/>(custody chain + per-case Merkle tree)"]
+    BG["Blockchain Gateway<br/>(web3 client, registrar key)"]
+  end
+  subgraph KT["Key Management"]
+    KEK["Master key (KEK)<br/>Docker secret on VM"]
+  end
+  subgraph DT["Data Tier"]
+    PG[("PostgreSQL<br/>metadata, hashes, CIDs,<br/>custody events, anchors")]
+    IPFS[("Private IPFS (Kubo)<br/>swarm.key, pinned<br/>ciphertext only")]
+  end
+  subgraph BT["Blockchain Tier (local)"]
+    REG["EvidenceRegistry<br/>smart contract (Solidity)"]
+  end
+
+  APP <-->|HTTPS/JSON| GW
+  GW --> EC
+  EC -->|raw bytes| HS
+  EC -->|plaintext original + copy| CC
+  CC -->|wrap / unwrap DEK| KEK
+  CC -->|ciphertext| ST
+  ST -->|add + pin| IPFS
+  EC -->|hashes, CIDs, wrapped-key ref| PG
+  EC -->|stage output hashes| IL
+  IL -->|custody events, roots| PG
+  IL -->|caseCommitment, caseRoot| BG
+  BG -->|"anchor() / verify()"| REG

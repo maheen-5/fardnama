@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<title>FardNama - Evidence Companion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bark:#2A2E1F;
+    --leather:#586B3D;
+    --chestnut:#8E9A63;
+    --dunes:#EDE7D2;
+    --olive:#6E7B4B;
+    --olive-deep:#4A5333;
+    --olive-soft:#AEB48C;
+    --paper:#FFFFFF;
+    --paper-2:#F6F3E7;
+    --beige:#F1EBD9;
+    --sage:#E1E8D3;
+    --sage-2:#EFF3E5;
+    --line: #E1D9BD;
+    --brick:#7A3B2E;
+    --ink: #2A2E1F;
+    --ink-soft: #6E7057;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(42,46,31,0.06), 0 10px 26px rgba(42,46,31,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:
+      radial-gradient(circle at 10% -5%, rgba(180,196,150,0.30), transparent 42%),
+      radial-gradient(circle at 100% 10%, rgba(200,184,140,0.28), transparent 45%),
+      radial-gradient(circle at 20% 100%, rgba(180,196,150,0.22), transparent 45%),
+      var(--beige);
+    color: var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{ font-family:'Source Serif 4', serif; }
+
+  body.urdu-font{ font-family:'Noto Sans Arabic','Inter',sans-serif; }
+  body.urdu-font h1,body.urdu-font h2,body.urdu-font h3,body.urdu-font .serif,
+  body.urdu-font .brand-name,body.urdu-font .gate-title,body.urdu-font .page-title,
+  body.urdu-font .sos-modal h3{ font-family:'Noto Nastaliq Urdu', serif; font-weight:500; line-height:2.1; }
+  body.urdu-font{ line-height:1.9; }
+  html[dir="rtl"] body{ direction: rtl; }
+  .ltr-num{ direction:ltr; unicode-bidi:isolate; display:inline-block; }
+
+  .bg-decor{ position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none; }
+  .bg-decor::before{ content:""; position:absolute; width:560px; height:560px; border-radius:50%; top:-160px; right:-160px; background: radial-gradient(circle, rgba(110,123,75,0.18), transparent 70%); filter:blur(6px); }
+  .bg-decor::after{ content:""; position:absolute; width:460px; height:460px; border-radius:50%; bottom:-140px; left:6%; background: radial-gradient(circle, rgba(200,184,140,0.30), transparent 70%); filter:blur(6px); }
+
+  .app{ display:flex; min-height:100vh; }
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar{
+    width: 280px;
+    flex-shrink:0;
+    background: linear-gradient(180deg, #3A4028 0%, #262B19 100%);
+    color: var(--dunes);
+    padding: 24px 22px 24px;
+    display:flex; flex-direction:column;
+    position:sticky; top:0; height:100vh;
+  }
+  .sidebar-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-mark{
+    width:34px;height:34px;border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #9AA873, #586B3D 70%);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15);
+  }
+  .brand-mark svg{ width:16px;height:16px; }
+  .brand-name{ font-family:'Source Serif 4', serif; font-size:20px; font-weight:600; color:#F5F2DE; letter-spacing:0.2px;}
+  .brand-sub{ font-size:12.5px; color:#AEB48F; margin: 2px 0 22px; line-height:1.5; padding-left:44px;}
+  body.urdu-font .brand-sub{ padding-left:0; padding-right:44px; }
+
+  .lang-switch{ display:flex; background: rgba(255,255,255,0.08); border-radius:999px; padding:3px; gap:2px; flex-shrink:0; }
+  .lang-btn{ border:none; background:transparent; color:#B9C29A; font-size:11px; font-weight:700; padding:5px 10px; border-radius:999px; cursor:pointer; font-family:'Inter',sans-serif; }
+  .lang-btn.active{ background:#EFEADA; color:#2A2E1F; }
+
+  .path{ list-style:none; margin:0; padding:0; position:relative; flex:1; overflow-y:auto;}
+  .path::before{
+    content:""; position:absolute; left:15px; top:8px; bottom:8px; width:1.5px;
+    background: linear-gradient(180deg, rgba(174,180,140,0.5), rgba(174,180,140,0.08));
+  }
+  .path li{ position:relative; }
+  .path button{
+    all:unset; cursor:pointer; display:flex; align-items:flex-start; gap:14px;
+    padding: 11px 8px 11px 4px; width:100%; border-radius:8px;
+  }
+  .path button:hover{ background: rgba(255,255,255,0.05); }
+  .dot{
+    width:31px;height:31px;border-radius:50%; flex-shrink:0; z-index:1;
+    display:flex; align-items:center; justify-content:center;
+    background:#2F3521; border:1.5px solid #5C6540; color:#BEC29C;
+    font-size:13px; font-weight:600; transition: all .2s ease;
+  }
+  .path li.active .dot{ background: var(--chestnut); border-color:#C3CB9F; color:#232817; }
+  .path li.done .dot{ background:#4A5333; border-color:#7C8657; color:#E5E7CE; }
+  .step-copy{ padding-top:3px; }
+  .step-title{ font-size:13.5px; font-weight:600; color:#E7E5CC; line-height:1.35;}
+  .path li.active .step-title{ color:#FAF8E8; }
+  .step-desc{ font-size:11.5px; color:#8D9271; margin-top:2px; line-height:1.4; }
+
+  .sidebar-foot{
+    margin-top:18px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.08);
+    font-size:11.5px; color:#8D9271; line-height:1.6;
+  }
+  .sidebar-foot b{ color:#C6CBA5; }
+
+  /* ---------- MAIN ---------- */
+  .main{ flex:1; padding: 40px 52px 60px; max-width:980px; }
+  .crumb{ font-size:12.5px; color: var(--ink-soft); margin-bottom:8px; font-weight:600; letter-spacing:0.3px; }
+  .title-kicker{ width:38px; height:4px; border-radius:4px; background: linear-gradient(90deg, var(--olive), var(--chestnut)); margin-bottom:14px; }
+  .page-title{ font-size:30px; font-weight:600; margin:0 0 8px; color: var(--bark); }
+  .page-desc{ font-size:14.5px; color: var(--ink-soft); max-width:640px; line-height:1.7; margin-bottom:32px;}
+
+  .fade-in{ animation: fadeUp .35s ease; }
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
+
+  .card{
+    background: var(--paper); border:1px solid var(--line); border-left:3px solid var(--olive);
+    border-radius: var(--radius); padding: 24px 26px; margin-bottom:20px; box-shadow: var(--shadow);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  body.urdu-font .card{ border-left:1px solid var(--line); border-right:3px solid var(--olive); }
+  .card:hover{ transform: translateY(-2px); box-shadow: 0 4px 10px rgba(42,46,31,0.08), 0 16px 34px rgba(42,46,31,0.1); }
+  .card h3{ font-size:16px; margin:0 0 4px; color:var(--bark); font-weight:600;}
+  .card .sub{ font-size:12.5px; color:var(--ink-soft); margin-bottom:18px; }
+  .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+
+  /* buttons */
+  .btn{
+    font-family:'Inter',sans-serif; font-size:13.5px; font-weight:600; border-radius:9px; padding:10px 18px;
+    border:1px solid transparent; cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+    transition: transform .12s ease, box-shadow .12s ease, background .15s ease;
+  }
+  body.urdu-font .btn{ font-family:'Noto Sans Arabic','Inter',sans-serif; }
+  .btn:active{ transform: scale(0.97); }
+  .btn:disabled{ cursor:not-allowed; opacity:0.65; box-shadow:none; transform:none; }
+  .btn-primary{ background: var(--leather); color:#FBF3DD; box-shadow: 0 4px 12px rgba(88,107,61,0.28); }
+  .btn-primary:hover{ background:#4A5A31; }
+  .btn-ghost{ background: var(--sage); border-color: var(--sage); color: var(--olive-deep); }
+  .btn-ghost:hover{ background: #D7E0C4; }
+
+  /* upload dropzone */
+  .dropzone{
+    border:1.5px dashed var(--olive-soft); border-radius:14px; background: var(--sage-2);
+    padding:40px 20px; text-align:center; color: var(--ink-soft);
+  }
+  .dropzone .icon{ width:44px;height:44px; margin:0 auto 14px; }
+  .dropzone strong{ color: var(--bark); font-size:14.5px; }
+  .dropzone p{ font-size:12.5px; margin:6px 0 16px; }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .chip{
+    font-size:11.5px; background: var(--sage); border:1px solid #CFDBB8; color: var(--olive-deep);
+    padding:5px 11px; border-radius:999px; cursor:pointer; transition: all .15s ease;
+  }
+  .chip.selected{ background: var(--olive); border-color: var(--olive); color:#fff; }
+
+  .field-list{ list-style:none; margin:0; padding:0; font-size:13px; }
+  .field-list li{ display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--line); color:var(--ink-soft);}
+  .field-list li:last-child{ border-bottom:none; }
+  .field-list b{ color: var(--bark); font-weight:500; }
+
+  /* progress steps for processing */
+  .proc-step{ display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid var(--line); }
+  .proc-step:last-child{ border-bottom:none; }
+  .proc-icon{ width:30px;height:30px; border-radius:50%; background: var(--olive); color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+  .proc-icon.pending{ background: var(--sage); color: var(--olive-deep); border:1px solid #CFDBB8; }
+  .proc-title{ font-size:13.5px; font-weight:600; color: var(--bark); }
+  .proc-desc{ font-size:12px; color: var(--ink-soft); margin-top:1px;}
+  .proc-meta{ margin-inline-start:auto; font-size:11.5px; color: var(--ink-soft); white-space:nowrap; }
+
+  /* classification tags */
+  .tag-row{ display:flex; align-items:center; gap:14px; padding:12px 0; border-bottom:1px solid var(--line); }
+  .tag-row:last-child{ border-bottom:none; }
+  .tag-name{ width:150px; font-size:13px; font-weight:600; color: var(--bark); flex-shrink:0; }
+  .bar-track{ flex:1; height:8px; border-radius:6px; background: var(--sage); overflow:hidden; }
+  .bar-fill{ height:100%; border-radius:6px; background: linear-gradient(90deg, var(--olive), var(--chestnut)); }
+  .tag-pct{ width:44px; text-align:end; font-size:12.5px; color: var(--ink-soft); }
+
+  /* severity gauge */
+  .sev-wrap{ display:flex; gap:28px; align-items:center; }
+  .sev-scale{ display:flex; flex-direction:column; gap:8px; flex:1; }
+  .sev-item{ display:flex; align-items:center; gap:12px; }
+  .sev-bar{ flex:1; height:14px; border-radius:7px; background: var(--sage); position:relative; overflow:hidden; }
+  .sev-bar i{ position:absolute; inset-inline-start:0; top:0;bottom:0; border-radius:7px; }
+  .sev-label{ width:70px; font-size:12px; color: var(--ink-soft); font-weight:600; }
+  .sev-badge{
+    flex-shrink:0; width:118px; height:118px; border-radius:50%; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; background: radial-gradient(circle at 35% 30%, #9A4A38, #6E2E22);
+    color:#F6EADD; box-shadow: 0 6px 20px rgba(122,59,46,0.35);
+  }
+  .sev-badge .n{ font-family:'Source Serif 4',serif; font-size:22px; font-weight:600; text-align:center; padding:0 8px; }
+  .sev-badge .l{ font-size:11px; letter-spacing:0.3px; opacity:0.85; margin-top:2px;}
+
+  .kv-grid{ display:grid; grid-template-columns:140px 1fr; gap:10px 16px; font-size:13px; }
+  .kv-grid dt{ color: var(--ink-soft); }
+  .kv-grid dd{ margin:0; color: var(--bark); font-weight:500; }
+  .pill{ display:inline-block; font-size:11.5px; padding:3px 10px; border-radius:999px; background: var(--sage); border:1px solid #CFDBB8; color: var(--olive-deep); font-weight:600; }
+
+  .recommend{
+    background: var(--sage-2); border-radius:10px; padding:16px 18px; font-size:13px; color: var(--bark);
+    line-height:1.7; border-inline-start:3px solid var(--olive);
+  }
+
+  /* timeline */
+  .tl{ position:relative; padding-inline-start:26px; }
+  .tl::before{ content:""; position:absolute; inset-inline-start:6px; top:4px; bottom:4px; width:1.5px; background: var(--line); }
+  .tl-item{ position:relative; padding-bottom:26px; }
+  .tl-item:last-child{ padding-bottom:0; }
+  .tl-dot{ position:absolute; inset-inline-start:-26px; top:2px; width:13px;height:13px; border-radius:50%; background: var(--chestnut); border:2px solid var(--paper); box-shadow:0 0 0 1.5px var(--chestnut); }
+  .tl-item.crit .tl-dot{ background: var(--brick); box-shadow:0 0 0 1.5px var(--brick); }
+  .tl-date{ font-size:11.5px; color: var(--ink-soft); margin-bottom:2px; }
+  .tl-title{ font-size:13.5px; font-weight:600; color: var(--bark); }
+  .tl-desc{ font-size:12.5px; color: var(--ink-soft); margin-top:2px; line-height:1.6; }
+
+  /* vault */
+  .vault-item{ display:flex; align-items:center; gap:16px; padding:16px 0; border-bottom:1px solid var(--line); cursor:pointer; }
+  .vault-item:last-child{ border-bottom:none; }
+  .vault-item:hover{ background: var(--sage-2); border-radius:8px; }
+  .vault-thumb{ width:52px;height:52px; border-radius:8px; background: var(--sage); flex-shrink:0; display:flex; align-items:center; justify-content:center; color: var(--olive-deep); }
+  .vault-name{ font-size:13.5px; font-weight:600; color: var(--bark); }
+  .vault-meta{ font-size:11.5px; color: var(--ink-soft); margin-top:2px; }
+  .vault-hash{ font-size:11px; color: var(--ink-soft); font-family:monospace; margin-inline-start:auto; text-align:end; }
+  .lock-tag{ font-size:11px; color: var(--olive-deep); font-weight:600; display:flex; align-items:center; gap:5px; margin-top:4px; justify-content:flex-end;}
+  .vault-detail{ display:none; font-size:11.5px; color:var(--ink-soft); margin-top:6px; padding-top:6px; border-top:1px dashed var(--line); }
+  .vault-item.open .vault-detail{ display:block; }
+  .ev-label{ font-size:10.5px; font-weight:700; color: var(--olive-deep); text-transform:uppercase; letter-spacing:0.5px; }
+  .vault-trust{ font-size:11.5px; color:var(--ink-soft); margin-top:10px; padding-top:8px; border-top:1px dashed var(--line); }
+
+  /* report */
+  .report-preview{ background:#fff; border:1px solid var(--line); border-radius:10px; padding:26px 28px; font-size:12.5px; color:var(--ink-soft); line-height:1.75; }
+  .report-placeholder{ text-align:center; color: var(--ink-soft); font-size:12.5px; padding:36px 14px; }
+  .report-placeholder svg{ margin:0 auto 12px; display:block; color: var(--olive-soft); }
+  .report-preview h4{ font-family:'Source Serif 4',serif; color:var(--bark); font-size:16px; margin:0 0 4px; }
+  body.urdu-font .report-preview h4{ font-family:'Noto Nastaliq Urdu',serif; }
+  .report-preview .rp-sub{ font-size:11.5px; color:var(--ink-soft); margin-bottom:18px; }
+  .report-preview .rp-section{ margin-bottom:14px; }
+  .report-preview .rp-section b{ color:var(--bark); display:block; margin-bottom:3px; font-size:12.5px;}
+
+  /* assistant chat */
+  .chat{ display:flex; flex-direction:column; gap:14px; }
+  .msg{ max-width:78%; padding:12px 16px; border-radius:14px; font-size:13px; line-height:1.65; }
+  .msg.bot{ background: var(--sage-2); color: var(--bark); border-end-start-radius:4px; align-self:flex-start; }
+  .msg.user{ background: var(--leather); color:#F8F1E1; border-end-end-radius:4px; align-self:flex-end; }
+  .quick-replies{ display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
+  .qr{ font-size:12px; border:1px solid #CFDBB8; background: var(--sage); color:var(--olive-deep); padding:7px 13px; border-radius:999px; cursor:pointer; transition: all .15s ease; }
+  .qr:hover{ background: var(--olive); color:#fff; }
+
+  .disclaimer{
+    margin-top: 8px; font-size:12px; color: var(--ink-soft); background: var(--sage-2); border:1px solid #D9E2C6;
+    border-radius:10px; padding:12px 16px; display:flex; gap:10px; align-items:flex-start;
+  }
+  .disclaimer svg{ flex-shrink:0; margin-top:1px; color: var(--olive-deep); }
+
+  /* nav */
+  .page-nav{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:32px; padding-top:22px; border-top:1px solid var(--line); }
+  .page-nav .side{ font-size:12px; color: var(--ink-soft); }
+  .btn-back{ background:transparent; border:1px solid var(--line); color: var(--ink-soft); }
+  .btn-back:hover{ background: var(--paper-2); }
+  .btn-next{ background: var(--leather); color:#F8F6E6; }
+  .btn-next:hover{ background: var(--olive-deep); }
+
+  /* ---------- SOS ---------- */
+  .sos-fab{
+    position:fixed; right:26px; bottom:26px; z-index:50;
+    width:60px; height:60px; border-radius:50%; border:none; cursor:pointer;
+    background: var(--brick); color:#F8F1E1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    box-shadow: 0 6px 18px rgba(122,59,46,0.4);
+  }
+  .sos-fab .ring{ position:absolute; inset:-6px; border-radius:50%; border:2px solid rgba(122,59,46,0.4); animation: pulse 2.2s infinite; }
+  @keyframes pulse{ 0%{ transform:scale(1); opacity:0.7;} 100%{ transform:scale(1.35); opacity:0;} }
+  .sos-fab span{ font-size:10.5px; font-weight:700; letter-spacing:0.4px; margin-top:2px; }
+  .sos-hint{
+    position:fixed; right:96px; bottom:42px; z-index:50; background: var(--bark); color:#F3EFDE;
+    font-size:11.5px; padding:7px 12px; border-radius:8px; opacity:0; pointer-events:none; transition: opacity .2s ease;
+    max-width:190px; line-height:1.4;
+  }
+  .sos-fab:hover + .sos-hint{ opacity:1; }
+
+  .sos-overlay{
+    position:fixed; inset:0; background: rgba(35,40,25,0.55); backdrop-filter: blur(2px);
+    display:none; align-items:center; justify-content:center; z-index:100; padding:20px;
+  }
+  .sos-overlay.show{ display:flex; }
+  .sos-modal{
+    background:#fff; border-radius:18px; max-width:480px; width:100%; padding:32px 30px; text-align:center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+  .sos-modal .pulse-icon{
+    width:64px; height:64px; border-radius:50%; margin:0 auto 16px; background: var(--sage);
+    display:flex; align-items:center; justify-content:center; color: var(--olive-deep);
+  }
+  .sos-modal h3{ font-size:19px; margin:0 0 8px; color: var(--bark); }
+  .sos-modal p{ font-size:13.5px; color: var(--ink-soft); line-height:1.6; margin:0 0 20px; }
+  .sos-status{ font-size:12.5px; color: var(--olive-deep); font-weight:600; margin-bottom:18px; display:none; }
+  .sos-status.show{ display:block; }
+  .safe-place{ display:flex; align-items:center; gap:12px; text-align:start; padding:11px 0; border-top:1px solid var(--line); }
+  .safe-place .n{ font-size:13px; font-weight:600; color: var(--bark); }
+  .safe-place .d{ font-size:11.5px; color: var(--ink-soft); }
+  .safe-place .dist{ margin-inline-start:auto; font-size:11.5px; color: var(--olive-deep); font-weight:600; white-space:nowrap; }
+  .sos-note{ font-size:11px; color: var(--ink-soft); margin-top:18px; line-height:1.5; border-top:1px solid var(--line); padding-top:14px; }
+
+  /* ---------- GATE SCREENS (notice + login) ---------- */
+  .hidden{ display:none !important; }
+  .gate-screen{
+    min-height:100vh; width:100%; display:flex; align-items:center; justify-content:center;
+    padding:40px 20px; position:relative;
+  }
+  .gate-topbar{ position:absolute; top:24px; right:28px; }
+  body.urdu-font .gate-topbar{ right:auto; left:28px; }
+  .gate-card{
+    background:#fff; border-radius:20px; padding:36px 40px 32px; width:100%; max-width:520px;
+    box-shadow: 0 24px 60px rgba(42,46,31,0.14); border:1px solid var(--line);
+  }
+  .gate-brand{ display:flex; align-items:center; gap:10px; margin-bottom:22px; }
+  .gate-brand .brand-mark{
+    width:34px;height:34px;border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #9AA873, #586B3D 70%);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .gate-brand .brand-name{ color: var(--bark); }
+  .gate-title{ font-size:23px; color: var(--bark); margin:0 0 6px; }
+  .gate-sub{ font-size:13.5px; color: var(--ink-soft); line-height:1.65; margin:0 0 22px; }
+
+  .notice-list{ display:flex; flex-direction:column; gap:16px; max-height:340px; overflow-y:auto; padding-inline-end:6px; margin-bottom:22px; }
+  .notice-item{ display:flex; gap:12px; align-items:flex-start; }
+  .notice-icon{
+    width:30px; height:30px; border-radius:9px; background: var(--sage); color: var(--olive-deep);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px; font-weight:600;
+  }
+  .notice-item b{ display:block; font-size:13.5px; color: var(--bark); margin-bottom:2px; }
+  .notice-item span{ display:block; font-size:12.5px; color: var(--ink-soft); line-height:1.6; }
+
+  .agree-row{ display:flex; align-items:flex-start; gap:9px; font-size:12.5px; color: var(--ink-soft); line-height:1.55; margin-bottom:18px; cursor:pointer; }
+  .agree-row input{ margin-top:2px; accent-color: var(--olive); flex-shrink:0; }
+
+  .gate-btn{ width:100%; justify-content:center; font-size:14px; padding:12px 18px; }
+  .gate-btn:disabled{ background: var(--olive-soft); cursor:not-allowed; opacity:0.7; box-shadow:none; }
+  .gate-note{ font-size:11.5px; color: var(--ink-soft); text-align:center; margin-top:14px; line-height:1.55; }
+
+  .login-tabs{ display:flex; gap:6px; background: var(--paper-2); border-radius:11px; padding:4px; margin-bottom:20px; }
+  .login-tab{
+    flex:1; border:none; background:transparent; padding:9px; border-radius:8px; font-size:13px; font-weight:600;
+    color: var(--ink-soft); cursor:pointer; font-family:'Inter',sans-serif;
+  }
+  .login-tab.active{ background:#fff; color: var(--leather); box-shadow: var(--shadow); }
+
+  .field-label{ display:block; font-size:12px; font-weight:600; color: var(--bark); margin-bottom:6px; }
+  .field-label span{ font-weight:400; color: var(--ink-soft); margin-inline-start:4px; }
+  .gate-input{
+    width:100%; padding:11px 13px; border-radius:10px; border:1px solid var(--line); background: var(--paper-2);
+    font-family:'Inter',sans-serif; font-size:13.5px; color: var(--bark);
+  }
+  .gate-input:focus{ outline:none; border-color: var(--olive); background:#fff; box-shadow:0 0 0 3px rgba(110,123,75,0.15); }
+
+  ::-webkit-scrollbar{ width:8px; }
+  ::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.15); border-radius:4px; }
+  html,body{ overflow-x:hidden; }
+
+  @media (max-width:560px){
+    .gate-card{ padding:28px 22px 24px; border-radius:16px; }
+    .gate-title{ font-size:20px; }
+    .notice-list{ max-height:none; }
+    .gate-topbar{ position:static; display:flex; justify-content:flex-end; margin-bottom:16px; }
+  }
+
+  @media (max-width: 780px){
+    .app{ flex-direction:column; }
+    .sidebar{
+      width:100%; height:auto; position:sticky; top:0; z-index:40;
+      flex-direction:row; align-items:center; padding:12px 14px; gap:12px; flex-wrap:wrap;
+    }
+    .sidebar-top{ margin-bottom:0; }
+    .brand{ flex-shrink:0; }
+    .brand-name{ font-size:16px; }
+    .brand-mark{ width:28px; height:28px; }
+    .brand-mark svg{ width:13px; height:13px; }
+    .brand-sub, .sidebar-foot{ display:none; }
+
+    .path{
+      display:flex; flex-direction:row; gap:2px; flex:1; min-width:0;
+      overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px; width:100%; order:3;
+    }
+    .path::before{ display:none; }
+    .path li{ flex-shrink:0; }
+    .path button{ flex-direction:column; align-items:center; gap:3px; padding:5px 9px; }
+    .step-copy{ padding-top:0; }
+    .step-title{ font-size:9.5px; max-width:56px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.2; }
+    .step-desc{ display:none; }
+    .dot{ width:26px; height:26px; font-size:11px; }
+
+    .main{ padding:22px 16px 100px; max-width:100%; }
+    .crumb{ font-size:11.5px; }
+    .page-title{ font-size:23px; }
+    .page-desc{ font-size:13px; margin-bottom:22px; }
+    .card{ padding:18px 16px; margin-bottom:16px; }
+    .card h3{ font-size:14.5px; }
+    .grid-2{ grid-template-columns:1fr; gap:14px; }
+
+    .dropzone{ padding:28px 14px; }
+
+    .sev-wrap{ flex-direction:column; align-items:stretch; gap:20px; }
+    .sev-badge{ align-self:center; }
+    .kv-grid{ grid-template-columns:120px 1fr; font-size:12.5px; }
+
+    .tag-row{ flex-wrap:wrap; row-gap:6px; }
+    .tag-name{ width:100%; }
+    .bar-track{ order:3; width:100%; }
+    .tag-pct{ order:2; margin-inline-start:auto; }
+
+    .vault-item{ flex-wrap:wrap; }
+    .vault-thumb{ width:44px; height:44px; }
+    .vault-hash{ margin-inline-start:0; width:100%; text-align:start; margin-top:8px; }
+    .lock-tag{ justify-content:flex-start; }
+
+    .report-preview{ padding:20px 18px; }
+
+    .msg{ max-width:88%; font-size:12.5px; }
+    .quick-replies{ flex-direction:column; align-items:stretch; }
+    .qr{ text-align:center; }
+
+    .page-nav{ flex-direction:column-reverse; align-items:stretch; gap:10px; margin-top:26px; }
+    .page-nav .side{ text-align:center; }
+    .btn-next, .btn-back{ width:100%; justify-content:center; }
+
+    .sos-fab{ right:14px; bottom:14px; width:52px; height:52px; }
+    .sos-fab svg{ width:17px; height:17px; }
+    .sos-hint{ display:none; }
+    .sos-modal{ padding:24px 18px; border-radius:16px; max-width:100%; }
+    .sos-modal h3{ font-size:17px; }
+  }
+
+  @media (max-width: 360px){
+    .path button{ padding:5px 6px; }
+    .step-title{ max-width:44px; }
+    .page-title{ font-size:20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-decor" aria-hidden="true"></div>
+
+<!-- NOTICE / CONSENT SCREEN -->
+<div class="gate-screen" id="noticeScreen">
+  <div class="gate-topbar">
+    <div class="lang-switch" style="background:rgba(42,46,31,0.06);">
+      <button class="lang-btn" id="langBtnEn1" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="langBtnUr1" onclick="setLang('ur')">اردو</button>
+    </div>
+  </div>
+  <div class="gate-card notice-card">
+    <div class="gate-brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L4 6V12C4 17 7.5 20.5 12 22C16.5 20.5 20 17 20 12V6L12 2Z" stroke="#F6EFDD" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="brand-name" data-i18n="brand.name">FardNama</div>
+    </div>
+    <h2 class="gate-title" data-i18n="notice.title">Before you continue</h2>
+    <p class="gate-sub" data-i18n="notice.sub">Please read this - it explains how your case is handled and what rights you keep.</p>
+
+    <div class="notice-list">
+      <div class="notice-item">
+        <div class="notice-icon">§</div>
+        <div><b data-i18n="notice.item1.title">Aligned with PECA 2016</b><span data-i18n="notice.item1.body">Evidence categories and reporting pathways in this tool follow the Prevention of Electronic Crimes Act, 2016 - so what you prepare here maps to how the FIA Cybercrime Wing actually reviews cases.</span></div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-icon">🔒</div>
+        <div><b data-i18n="notice.item2.title">Your evidence is private by default</b><span data-i18n="notice.item2.body">Everything you upload is encrypted and visible only to you. No one else , not even FardNama staff , can open it without your permission.</span></div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-icon">✋</div>
+        <div><b data-i18n="notice.item3.title">Nothing is auto-submitted</b><span data-i18n="notice.item3.body">We never send your report, evidence, or location to police, the FIA, or anyone else automatically. Every submission is a deliberate action you take yourself.</span></div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-icon">🕊</div>
+        <div><b data-i18n="notice.item4.title">You can delete everything, anytime</b><span data-i18n="notice.item4.body">You can export or permanently delete your case data whenever you choose - there's no obligation to keep it here.</span></div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-icon">🪪</div>
+        <div><b data-i18n="notice.item5.title">Identified by case number, not name</b><span data-i18n="notice.item5.body">Wherever possible, your case is referenced by ID rather than your name, so your identity stays shielded unless you decide otherwise.</span></div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-icon">☎</div>
+        <div><b data-i18n="notice.item6.title">This doesn't replace emergency help</b><span data-i18n="notice.item6.body">If you're in immediate danger, please contact the police or a trusted person directly - this tool supports that process, it doesn't substitute for it.</span></div>
+      </div>
+    </div>
+
+    <label class="agree-row">
+      <input type="checkbox" id="agreeBox" onchange="document.getElementById('noticeContinue').disabled = !this.checked">
+      <span data-i18n="notice.agree">I've read this and understand how my case will be handled.</span>
+    </label>
+    <button class="btn btn-primary gate-btn" id="noticeContinue" disabled onclick="showLogin()"><span data-i18n="notice.continue">Continue</span></button>
+  </div>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div class="gate-screen hidden" id="loginScreen">
+  <div class="gate-topbar">
+    <div class="lang-switch" style="background:rgba(42,46,31,0.06);">
+      <button class="lang-btn" id="langBtnEn2" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="langBtnUr2" onclick="setLang('ur')">اردو</button>
+    </div>
+  </div>
+  <div class="gate-card login-card">
+    <div class="gate-brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L4 6V12C4 17 7.5 20.5 12 22C16.5 20.5 20 17 20 12V6L12 2Z" stroke="#F6EFDD" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="brand-name" data-i18n="brand.name">FardNama</div>
+    </div>
+    <h2 class="gate-title" data-i18n="login.title">Welcome back</h2>
+    <p class="gate-sub" data-i18n="login.sub">Log in with the case number we assigned you, or your own username.</p>
+
+    <div class="login-tabs">
+      <button class="login-tab active" id="tabCase" onclick="switchLoginTab('case')"><span data-i18n="login.tabCase">Case number</span></button>
+      <button class="login-tab" id="tabUser" onclick="switchLoginTab('user')"><span data-i18n="login.tabUser">Username</span></button>
+    </div>
+
+    <div id="caseLogin">
+      <label class="field-label"><span data-i18n="login.caseLabel">Case number</span> <span data-i18n="login.caseLabelHint">assigned to you by your counsellor</span></label>
+      <input class="gate-input ltr-num" type="text" value="FN-2291">
+      <label class="field-label" style="margin-top:14px;"><span data-i18n="login.passwordLabel">Password</span> <span data-i18n="login.passwordHint">set your own on first login</span></label>
+      <input class="gate-input" type="password" placeholder="••••••••">
+    </div>
+
+    <div id="userLogin" class="hidden">
+      <label class="field-label" data-i18n="login.usernameLabel">Username</label>
+      <input class="gate-input" type="text" data-i18n-ph="login.usernamePh" placeholder="Choose a username">
+      <label class="field-label" style="margin-top:14px;" data-i18n="login.passwordLabel">Password</label>
+      <input class="gate-input" type="password" placeholder="••••••••">
+    </div>
+
+    <button class="btn btn-primary gate-btn" style="margin-top:18px;" onclick="showApp()"><span data-i18n="login.loginBtn">Log in</span></button>
+    <div class="gate-note" data-i18n="login.note">First time here? Your password is set the moment you log in with a new case number or username - there's no separate sign-up step.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app hidden" id="appRoot">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L4 6V12C4 17 7.5 20.5 12 22C16.5 20.5 20 17 20 12V6L12 2Z" stroke="#F6EFDD" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="brand-name" data-i18n="brand.name">FardNama</div>
+      </div>
+      <div class="lang-switch">
+        <button class="lang-btn" id="langBtnEn3" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" id="langBtnUr3" onclick="setLang('ur')">اردو</button>
+      </div>
+    </div>
+    <div class="brand-sub" data-i18n="brand.tagline">A steady place to collect and preserve evidence of online harassment.</div>
+
+    <ul class="path" id="pathList"></ul>
+
+    <div class="sidebar-foot">
+      <span data-i18n="sidebar.signedInAs">Signed in as</span> <b><span class="ltr-num">FN-2291</span></b><br>
+      <span data-i18n="sidebar.privacyNote">Your evidence stays encrypted and private.</span>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="mainContent"></main>
+</div>
+
+<div id="sosRoot" class="hidden">
+  <button class="sos-fab" id="sosFab" ondblclick="triggerSOS()">
+    <div class="ring"></div>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6V12C4 17 7.5 20.5 12 22C16.5 20.5 20 17 20 12V6L12 2Z" stroke="currentColor" stroke-width="1.6"/><path d="M12 8V13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>
+    <span>SOS</span>
+  </button>
+  <div class="sos-hint" data-i18n="sos.hint">Double-click for an emergency alert - sends your location to trusted contacts</div>
+
+  <div class="sos-overlay" id="sosOverlay">
+    <div class="sos-modal">
+      <div class="pulse-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 4 14.5 4 9.2C4 5.9 6.7 3.5 9.7 3.5C11.2 3.5 12 4.3 12 4.3C12 4.3 12.8 3.5 14.3 3.5C17.3 3.5 20 5.9 20 9.2C20 14.5 12 21 12 21Z" stroke="currentColor" stroke-width="1.5"/></svg>
+      </div>
+      <h3 id="sosTitle" data-i18n="sos.sendingTitle">Sending your location…</h3>
+      <p id="sosText" data-i18n="sos.sendingText">Alerting your trusted contacts. This only takes a second.</p>
+      <div class="sos-status" id="sosStatus"><span data-i18n="sos.status">✓ Location shared with 2 trusted contacts</span>, <span class="ltr-num">12:57 PM</span></div>
+      <div id="sosPlaces" style="display:none;">
+        <div style="text-align:start; font-size:12.5px; font-weight:600; color:var(--bark); margin-bottom:2px;" data-i18n="sos.placesHeading">Nearest safe places right now</div>
+        <div class="safe-place"><div><div class="n" data-i18n="sos.place1.name">FIA Cybercrime Reporting Centre</div><div class="d" data-i18n="sos.place1.sub">Aabpara, Islamabad</div></div><div class="dist ltr-num">0.8 km</div></div>
+        <div class="safe-place"><div><div class="n" data-i18n="sos.place2.name">Police Station Aabpara</div><div class="d" data-i18n="sos.place2.sub">Open 24 hours</div></div><div class="dist ltr-num">1.1 km</div></div>
+        <div class="safe-place"><div><div class="n" data-i18n="sos.place3.name">Shifa International Hospital</div><div class="d" data-i18n="sos.place3.sub">Emergency ward</div></div><div class="dist ltr-num">2.4 km</div></div>
+        <div class="safe-place"><div><div class="n" data-i18n="sos.place4.name">Centaurus Mall</div><div class="d" data-i18n="sos.place4.sub">Busy, well-lit public space</div></div><div class="dist ltr-num">1.6 km</div></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:20px;" onclick="closeSOS()"><span data-i18n="sos.close">Close</span></button>
+      <div class="sos-note" data-i18n="sos.note">This is a prototype: browsers can't hook into your device's real power button or send live SMS. In a native app, this same double-click gesture would trigger a real alert and pull real-time nearby safe locations.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============== I18N ============== */
+const I18N = {
+en:{
+"brand.name":"FardNama",
+"brand.tagline":"A steady place to collect and preserve evidence of online harassment.",
+"sidebar.signedInAs":"Signed in as",
+"sidebar.privacyNote":"Your evidence stays encrypted and private.",
+"nav.back":"Back",
+"nav.continueTo":'Continue to "{name}"',
+"nav.finish":"Finish",
+"nav.startMsg":"You're at the start",
+"nav.doneMsg":"That's every step - you're ready.",
+"crumb.template":"Step {n} of {total}",
+"common.autoDetected":"Auto-detected",
+"common.done":"Done",
+"common.inProgress":"In progress",
+"common.included":"Included",
+
+"step.upload.title":"Add evidence", "step.upload.desc":"Bring in screenshots, chats or files",
+"step.processing.title":"Read & organize", "step.processing.desc":"Text is pulled from every file",
+"step.classify.title":"Understand what happened", "step.classify.desc":"Patterns are named and grouped",
+"step.assess.title":"Assessment", "step.assess.desc":"Severity and legal grounding, together",
+"step.timeline.title":"Timeline", "step.timeline.desc":"Everything laid out in order",
+"step.vault.title":"Evidence vault", "step.vault.desc":"Everything kept safe, unchanged",
+"step.report.title":"Build report", "step.report.desc":"One clear document, ready to share",
+"step.assistant.title":"Get support", "step.assistant.desc":"Guidance for what to do next",
+"step.safety.title":"Safety tools", "step.safety.desc":"Quick help if you feel unsafe",
+
+"upload.pageTitle":"Add your evidence",
+"upload.pageDesc":"Upload screenshots, exported chats, documents, or paste text directly. Everything you add here is encrypted before it's stored, and only you can see it until you choose to include it in a report.",
+"upload.dropTitle":"Drag files here, or choose from your device",
+"upload.dropDesc":"Accepted: screenshots, chat exports (.txt/.json/.html), PDF, Word docs, or pasted plain text",
+"upload.chip.whatsapp":"WhatsApp","upload.chip.instagram":"Instagram","upload.chip.messenger":"Facebook Messenger","upload.chip.discord":"Discord","upload.chip.snapchat":"Snapchat","upload.chip.plaintext":"Plain text",
+"upload.chooseFiles":"Choose files",
+"upload.uploadConfirm":"✓ 4 files added - ready to continue",
+"upload.captureTitle":"What we'll capture automatically",
+"upload.captureSub":"So you don't have to remember the details later",
+"upload.f.timestamp":"Timestamp","upload.f.device":"Device & source","upload.f.platform":"Platform","upload.f.filesize":"File size & name",
+"upload.accountTitle":"Your account",
+"upload.accountSub":"Kept separate from your case data",
+"upload.a.signin":"Sign-in","upload.a.signinv":"Secure login",
+"upload.a.created":"Case created",
+"upload.a.reset":"Password reset","upload.a.resetv":"Available anytime",
+"upload.a.access":"Access","upload.a.accessv":"Only you, by default",
+"upload.disclaimer":"You're always in control - nothing is shared or submitted anywhere until you choose to.",
+
+"processing.pageTitle":"Reading and organizing your evidence",
+"processing.pageDesc":"We pull the text out of every screenshot and document, note where it came from, and fingerprint each file so it can never be quietly altered.",
+"processing.queueTitle":"Processing queue",
+"processing.queueSub":"4 items · 3 finished, 1 in progress",
+"processing.p1":"Text extracted from screenshot",
+"processing.p2":"Chat export parsed",
+"processing.p3":"Fingerprint recorded","processing.p3d":"A unique fingerprint is saved, so we can tell if the file was changed",
+"processing.p4":"Reading document text",
+"processing.checkTitle":"A quiet check happens here too",
+"processing.checkSub":"Files are flagged, never rejected, if something looks off",
+"processing.checkText":"If a file's metadata looks edited or re-saved after the fact, we'll note it as \"flagged for review\" - this doesn't remove it, it just tells you and your reviewer to look closer.",
+
+"classify.pageTitle":"Understanding what happened",
+"classify.pageDesc":"Each piece of evidence is read closely and grouped by the kind of behavior it shows. Nothing here is a legal judgment - it's a starting point for the assessment in the next step.",
+"classify.patternsTitle":"Patterns found across your evidence",
+"classify.patternsSub":"Based on 4 processed items",
+"classify.t.threats":"Threats","classify.t.harassment":"Harassment","classify.t.doxxing":"Doxxing","classify.t.impersonation":"Impersonation","classify.t.hate":"Hate speech",
+"classify.closerTitle":"Worth a closer look",
+"classify.closerSub":"An example of how items get grouped together",
+"classify.closerText":"Three messages from Sep 1–2 repeat a threat of physical harm. Because the same threat appears more than once, this cluster is carried into the assessment as a single, stronger case rather than three separate, smaller ones.",
+
+"assess.pageTitle":"Severity & legal assessment",
+"assess.pageDesc":"This is where severity and legal grounding come together into one picture: how serious this is, and where it sits under Pakistan's cyber-harassment law. This is an assessment to guide you - not a verdict.",
+"assess.sevTitle":"Overall severity",
+"assess.sevSub":"Weighed by how often it happened, how it escalated, and the strength of evidence behind it",
+"assess.badgeLevel":"Critical","assess.badgeSub":"Priority review",
+"assess.low":"Low","assess.medium":"Medium","assess.high":"High","assess.critical":"Critical",
+"assess.legalTitle":"Legal grounding","assess.legalSub":"Mapped for reference, not as formal advice",
+"assess.l.category":"Category","assess.l.section":"Relevant section","assess.l.sectionv":"Online stalking and threats of harm",
+"assess.l.body":"Reporting body","assess.l.bodyv":"FIA Cybercrime Wing",
+"assess.checkedTitle":"What was checked","assess.checkedSub":"Behind this assessment",
+"assess.c.corr":"Evidence matches up","assess.c.corrv":"Yes",
+"assess.c.integ":"Files are original","assess.c.integv":"Yes, unedited",
+"assess.c.escal":"Getting worse over time","assess.c.escalv":"Yes",
+"assess.c.dup":"Repeated messages","assess.c.dupv":"None found",
+"assess.recTitle":"Recommendation",
+"assess.recText":"Given the repeated, specific threat and matching evidence across two platforms, we'd suggest moving this toward a formal report soon. A person should still review this before anything is submitted.",
+
+"timeline.pageTitle":"How things unfolded",
+"timeline.pageDesc":"Every piece of evidence, placed in the order it happened. This is often the clearest way to show a pattern of escalation to someone reviewing your case.",
+"timeline.t1":"First contact","timeline.d1":"An unfamiliar account sent a message on Instagram.",
+"timeline.t2":"Messages repeat","timeline.d2":"Similar messages sent from a second account on WhatsApp.",
+"timeline.t3":"Direct threat","timeline.d3":"A specific threat of harm was sent, referencing your workplace.",
+"timeline.t4":"Personal details shared","timeline.d4":"Your address was posted in a group chat by the same account.",
+
+"vault.pageTitle":"Your evidence vault",
+"vault.pageDesc":"Every file lives here, encrypted, with a fingerprint that proves it hasn't been changed since the day it was added.",
+"vault.v1meta":"WhatsApp screenshot · Added Sep 2, 2026",
+"vault.v2meta":"Instagram chat export · Added Sep 2, 2026",
+"vault.v3meta":"Personal notes · Added Sep 3, 2026",
+"vault.detail":"Nothing has been changed · Checked just now · Only visible to you",
+"vault.locked":"Unchanged",
+"vault.footnote":"Every file is checked against its original fingerprint each time you open the vault.",
+"vault.demoLabel":"Demo preview, for illustration only",
+"vault.wa.m1":"Why are you ignoring my texts?",
+"vault.wa.m2":"I know where you work. Be careful.",
+"vault.wa.m3":"Please stop messaging me.",
+"vault.wa.m4":"This isn't over.",
+"vault.ig.contact":"fake_ameer.92",
+"vault.ig.m1":"Everyone should see what kind of person you really are.",
+"vault.ig.m2":"Your home address isn't hard to find, you know.",
+"vault.ig.m3":"Nowhere to hide now.",
+"vault.note.text":"I started writing this down after the first message on Instagram, just so I wouldn't forget how it happened. It's been almost a week now and the messages haven't stopped, they've gotten worse. I'm scared, but I'm keeping a record of everything so I can show someone when I'm ready.",
+
+"report.pageTitle":"Build your report",
+"report.pageDesc":"This puts everything - the timeline, the assessment, and the evidence - into one document you can bring to a person you trust, or to the authorities.",
+"report.includedTitle":"What's included",
+"report.i1":"Case summary","report.i2":"Timeline","report.i3":"Severity & legal notes","report.i4":"Evidence fingerprints","report.i5":"Recommended next steps",
+"report.generate":"Generate PDF report",
+"report.generated":"✓ Report generated",
+"report.placeholder":"Your report hasn't been generated yet. Click \"Generate PDF report\" below to see a preview.",
+"report.heading":"FardNama Evidence Report",
+"report.sub":"Case FN-2291 · Prepared Sep 3, 2026",
+"report.sSummary":"Summary","report.sSummaryv":"Four items of evidence collected across two platforms, showing an escalating pattern of harassment and one direct threat.",
+"report.sSeverity":"Severity","report.sSeverityv":"Critical - recommended for priority review.",
+"report.sLegal":"Legal reference","report.sLegalv":"PECA 2016, online stalking and threats of harm.",
+"report.sEvidence":"Evidence","report.sEvidencev":"3 files, each with a recorded fingerprint and timestamp.",
+"report.disclaimer":"This report documents and preserves your evidence - it isn't automatically accepted as proof in court on its own.",
+
+"assistant.pageTitle":"What to do next",
+"assistant.pageDesc":"A guide to help you take the next step, at your pace - whether that's finding where to file a complaint or reaching someone right now.",
+"assistant.bot1":"I've put together your report. Based on what's in it, here's what usually helps next. What would you like to do?",
+"assistant.user1":"Where do I file a complaint?",
+"assistant.bot2a":"The FIA Cybercrime Wing handles cases like this. Your nearest office is:",
+"assistant.bot2b":"FIA Cybercrime Reporting Centre - Islamabad",
+"assistant.bot2c":"Based on your case severity, this is worth doing soon rather than waiting.",
+"assistant.qr1":"Show me the address","assistant.qr2":"What do I bring?","assistant.qr3":"I'm not ready yet",
+"assistant.reply1":"It's the FIA Cybercrime Reporting Centre, Aabpara, Islamabad. Open Monday to Saturday, 9 AM–5 PM.",
+"assistant.reply2":"Bring a valid ID and your printed or digital report - the PDF from the last step covers everything they'll ask for.",
+"assistant.reply3":"That's completely okay. Your report and evidence will stay saved here for whenever you're ready.",
+"assistant.beforeTitle":"Before you go",
+"assistant.b1":"Your PDF report","assistant.b1v":"Ready",
+"assistant.b2":"Valid ID","assistant.b2v":"Bring with you",
+"assistant.b3":"Printed evidence copy","assistant.b3v":"Optional",
+"assistant.needTitle":"If you need someone now",
+"assistant.n1":"Trusted contact","assistant.n1v":"Notify",
+"assistant.n2":"Helpline","assistant.n2v":"Available 24/7",
+
+"safety.pageTitle":"Safety tools",
+"safety.pageDesc":"These are here for moments that can't wait for a report to finish. Available on every page, not just this one.",
+"safety.sosTitle":"Double-click the SOS button, anywhere in the app",
+"safety.sosSub":"Bottom-right corner, always visible",
+"safety.sosText":"Double-clicking it shares your live location with your trusted contacts and shows you the nearest safe places based on where you are right now - no need to navigate away from whatever you're doing.",
+"safety.tryNow":"Try it now",
+"safety.whoTitle":"Who gets notified",
+"safety.w1":"Trusted contact 1","safety.w1v":"Mother - Amina",
+"safety.w2":"Trusted contact 2","safety.w2v":"Friend - Zara",
+"safety.w3":"Message sent","safety.w3v":"Location + short alert",
+"safety.manageNote":"Manage who's on this list anytime from your profile.",
+"safety.followedTitle":"If you're being followed or feel unsafe",
+"safety.f1":"Nearest police station","safety.f2":"Nearest FIA cybercrime office","safety.f3":"Nearest busy public place","safety.fv":"Shown automatically",
+"safety.followedNote":"Head toward a well-lit, populated place first if you can - help is on the way.",
+"safety.disclaimer":"In a real emergency, call your local emergency number first. This feature supports that - it doesn't replace it.",
+
+"notice.title":"Before you continue",
+"notice.sub":"Please read this - it explains how your case is handled and what rights you keep.",
+"notice.item1.title":"Aligned with PECA 2016","notice.item1.body":"Evidence categories and reporting pathways in this tool follow the Prevention of Electronic Crimes Act, 2016 - so what you prepare here maps to how the FIA Cybercrime Wing actually reviews cases.",
+"notice.item2.title":"Your evidence is private by default","notice.item2.body":"Everything you upload is encrypted and visible only to you. No one else - not even FardNama staff - can open it without your permission.",
+"notice.item3.title":"Nothing is auto-submitted","notice.item3.body":"We never send your report, evidence, or location to police, the FIA, or anyone else automatically. Every submission is a deliberate action you take yourself.",
+"notice.item4.title":"You can delete everything, anytime","notice.item4.body":"You can export or permanently delete your case data whenever you choose - there's no obligation to keep it here.",
+"notice.item5.title":"Identified by case number, not name","notice.item5.body":"Wherever possible, your case is referenced by ID rather than your name, so your identity stays shielded unless you decide otherwise.",
+"notice.item6.title":"This doesn't replace emergency help","notice.item6.body":"If you're in immediate danger, please contact the police or a trusted person directly - this tool supports that process, it doesn't substitute for it.",
+"notice.agree":"I've read this and understand how my case will be handled.",
+"notice.continue":"Continue",
+
+"login.title":"Welcome back",
+"login.sub":"Log in with the case number we assigned you, or your own username.",
+"login.tabCase":"Case number","login.tabUser":"Username",
+"login.caseLabel":"Case number","login.caseLabelHint":"assigned to you by your counsellor",
+"login.passwordLabel":"Password","login.passwordHint":"set your own on first login",
+"login.usernameLabel":"Username","login.usernamePh":"Choose a username",
+"login.loginBtn":"Log in",
+"login.note":"First time here? Your password is set the moment you log in with a new case number or username - there's no separate sign-up step.",
+
+"sos.hint":"Double-click for an emergency alert - sends your location to trusted contacts",
+"sos.sendingTitle":"Sending your location…","sos.sendingText":"Alerting your trusted contacts. This only takes a second.",
+"sos.afterTitle":"You're not alone","sos.afterText":"Your live location and a short alert message were sent.",
+"sos.status":"✓ Location shared with 2 trusted contacts",
+"sos.placesHeading":"Nearest safe places right now",
+"sos.place1.name":"FIA Cybercrime Reporting Centre","sos.place1.sub":"Aabpara, Islamabad",
+"sos.place2.name":"Police Station Aabpara","sos.place2.sub":"Open 24 hours",
+"sos.place3.name":"Shifa International Hospital","sos.place3.sub":"Emergency ward",
+"sos.place4.name":"Centaurus Mall","sos.place4.sub":"Busy, well-lit public space",
+"sos.close":"Close",
+"sos.note":"This is a prototype: browsers can't hook into your device's real power button or send live SMS. In a native app, this same double-click gesture would trigger a real alert and pull real-time nearby safe locations."
+},
+ur:{
+"brand.name":"فرد نامہ",
+"brand.tagline":"آن لائن ہراسانی کے شواہد جمع اور محفوظ کرنے کے لیے ایک پُرسکون جگہ۔",
+"sidebar.signedInAs":"بطور لاگ اِن",
+"sidebar.privacyNote":"آپ کے شواہد ہمیشہ محفوظ اور خفیہ رہتے ہیں۔",
+"nav.back":"پیچھے",
+"nav.continueTo":'"{name}" کی جانب جاری رکھیں',
+"nav.finish":"مکمل",
+"nav.startMsg":"یہ آغاز ہے",
+"nav.doneMsg":"یہ سب مراحل مکمل ہوئے — آپ تیار ہیں۔",
+"crumb.template":"مرحلہ {n} از {total}",
+"common.autoDetected":"خودکار شناخت",
+"common.done":"مکمل",
+"common.inProgress":"جاری",
+"common.included":"شامل",
+
+"step.upload.title":"شواہد شامل کریں", "step.upload.desc":"اسکرین شاٹس، چیٹس یا فائلیں شامل کریں",
+"step.processing.title":"پڑھنا اور ترتیب دینا", "step.processing.desc":"ہر فائل سے متن نکالا جاتا ہے",
+"step.classify.title":"سمجھیں کیا ہوا", "step.classify.desc":"طرزِ عمل کی نشاندہی اور درجہ بندی",
+"step.assess.title":"تشخیص", "step.assess.desc":"شدت اور قانونی بنیاد ایک ساتھ",
+"step.timeline.title":"ٹائم لائن", "step.timeline.desc":"سب کچھ ترتیب وار",
+"step.vault.title":"شواہد کا محفوظ خانہ", "step.vault.desc":"سب کچھ محفوظ اور غیر تبدیل شدہ",
+"step.report.title":"رپورٹ بنائیں", "step.report.desc":"ایک واضح دستاویز، شیئر کرنے کے لیے تیار",
+"step.assistant.title":"مدد حاصل کریں", "step.assistant.desc":"اگلے قدم کے لیے رہنمائی",
+"step.safety.title":"حفاظتی آلات", "step.safety.desc":"غیر محفوظ محسوس ہونے پر فوری مدد",
+
+"upload.pageTitle":"اپنے شواہد شامل کریں",
+"upload.pageDesc":"اسکرین شاٹس، چیٹ ایکسپورٹس، دستاویزات شامل کریں یا براہِ راست متن پیسٹ کریں۔ یہاں شامل کی گئی ہر چیز محفوظ ہونے کے بعد اسٹور ہوتی ہے، اور جب تک آپ خود کسی رپورٹ میں شامل نہ کریں، صرف آپ ہی اسے دیکھ سکتے ہیں۔",
+"upload.dropTitle":"فائلیں یہاں گھسیٹیں، یا اپنے ڈیوائس سے منتخب کریں",
+"upload.dropDesc":"قابلِ قبول: اسکرین شاٹس، چیٹ ایکسپورٹس (.txt/.json/.html)، PDF، ورڈ دستاویزات، یا سادہ متن",
+"upload.chip.whatsapp":"واٹس ایپ","upload.chip.instagram":"انسٹاگرام","upload.chip.messenger":"فیس بک میسنجر","upload.chip.discord":"ڈسکارڈ","upload.chip.snapchat":"سنیپ چیٹ","upload.chip.plaintext":"سادہ متن",
+"upload.chooseFiles":"فائلیں منتخب کریں",
+"upload.uploadConfirm":"✓ 4 فائلیں شامل ہو گئیں — جاری رکھنے کے لیے تیار",
+"upload.captureTitle":"ہم خودکار طور پر کیا محفوظ کریں گے",
+"upload.captureSub":"تاکہ آپ کو بعد میں تفصیلات یاد نہ رکھنی پڑیں",
+"upload.f.timestamp":"وقت و تاریخ","upload.f.device":"ڈیوائس اور ذریعہ","upload.f.platform":"پلیٹ فارم","upload.f.filesize":"فائل کا سائز اور نام",
+"upload.accountTitle":"آپ کا اکاؤنٹ",
+"upload.accountSub":"آپ کے کیس ڈیٹا سے الگ رکھا جاتا ہے",
+"upload.a.signin":"سائن اِن","upload.a.signinv":"محفوظ لاگ اِن",
+"upload.a.created":"کیس تشکیل کی تاریخ",
+"upload.a.reset":"پاس ورڈ ری سیٹ","upload.a.resetv":"کبھی بھی دستیاب",
+"upload.a.access":"رسائی","upload.a.accessv":"بطور ڈیفالٹ صرف آپ",
+"upload.disclaimer":"اختیار ہمیشہ آپ کے پاس ہے — جب تک آپ خود فیصلہ نہ کریں، کچھ بھی کہیں شیئر یا جمع نہیں کیا جاتا۔",
+
+"processing.pageTitle":"آپ کے شواہد کو پڑھا اور ترتیب دیا جا رہا ہے",
+"processing.pageDesc":"ہم ہر اسکرین شاٹ اور دستاویز سے متن نکالتے ہیں، اس کا ماخذ نوٹ کرتے ہیں، اور ہر فائل کا ایک منفرد فنگر پرنٹ محفوظ کرتے ہیں تاکہ اسے خاموشی سے تبدیل نہ کیا جا سکے۔",
+"processing.queueTitle":"پروسیسنگ قطار",
+"processing.queueSub":"4 اشیاء · 3 مکمل، 1 جاری",
+"processing.p1":"اسکرین شاٹ سے متن نکال لیا گیا",
+"processing.p2":"چیٹ ایکسپورٹ کا تجزیہ کیا گیا",
+"processing.p3":"فنگر پرنٹ محفوظ کر لیا گیا","processing.p3d":"ایک منفرد نشان محفوظ کر لیا گیا، تاکہ پتہ چل سکے اگر فائل بدلی گئی ہو",
+"processing.p4":"دستاویز کا متن پڑھا جا رہا ہے",
+"processing.checkTitle":"یہاں ایک خاموش جانچ بھی ہوتی ہے",
+"processing.checkSub":"اگر کچھ مشکوک لگے تو فائل کو نشان زد کیا جاتا ہے، مسترد نہیں",
+"processing.checkText":"اگر کسی فائل کا میٹا ڈیٹا بعد میں تبدیل یا دوبارہ محفوظ ہوا معلوم ہو، تو ہم اسے \"جائزے کے لیے نشان زد\" کر دیتے ہیں — یہ فائل کو ہٹاتا نہیں، بس آپ اور جائزہ لینے والے کو مزید غور کرنے کا اشارہ دیتا ہے۔",
+
+"classify.pageTitle":"سمجھیں کہ کیا ہوا",
+"classify.pageDesc":"ہر شہادت کو باریک بینی سے پڑھ کر اس کے رویے کی نوعیت کے مطابق گروپ کیا جاتا ہے۔ یہ کوئی قانونی فیصلہ نہیں — یہ اگلے مرحلے کی تشخیص کے لیے ایک نقطہ آغاز ہے۔",
+"classify.patternsTitle":"آپ کے شواہد میں پائے گئے رجحانات",
+"classify.patternsSub":"4 پروسیس شدہ اشیاء کی بنیاد پر",
+"classify.t.threats":"دھمکیاں","classify.t.harassment":"ہراسانی","classify.t.doxxing":"ذاتی معلومات افشا","classify.t.impersonation":"جعلی شناخت","classify.t.hate":"نفرت انگیز بیان",
+"classify.closerTitle":"قریب سے دیکھنے کے قابل",
+"classify.closerSub":"اشیاء کو اکٹھا گروپ کرنے کی ایک مثال",
+"classify.closerText":"یکم تا 2 ستمبر کے تین پیغامات میں جسمانی نقصان کی دھمکی دہرائی گئی ہے۔ چونکہ یہی دھمکی ایک سے زیادہ بار سامنے آئی، اس لیے اسے تین الگ چھوٹے واقعات کے بجائے ایک واحد، مضبوط کیس کے طور پر تشخیص میں شامل کیا جاتا ہے۔",
+
+"assess.pageTitle":"شدت اور قانونی تشخیص",
+"assess.pageDesc":"یہاں شدت اور قانونی بنیاد ایک ہی تصویر میں اکٹھی ہو جاتی ہیں: معاملہ کتنا سنگین ہے، اور یہ پاکستان کے سائبر ہراسانی کے قانون کے تحت کہاں آتا ہے۔ یہ آپ کی رہنمائی کے لیے ایک تشخیص ہے — حتمی فیصلہ نہیں۔",
+"assess.sevTitle":"مجموعی شدت",
+"assess.sevSub":"یہ کتنی بار ہوا، کیسے بڑھا، اور شواہد کتنے مضبوط ہیں، ان سب کی بنیاد پر جانچا گیا",
+"assess.badgeLevel":"انتہائی سنگین","assess.badgeSub":"ترجیحی جائزہ",
+"assess.low":"کم","assess.medium":"درمیانہ","assess.high":"زیادہ","assess.critical":"انتہائی سنگین",
+"assess.legalTitle":"قانونی بنیاد","assess.legalSub":"حوالے کے لیے، باقاعدہ قانونی مشورہ نہیں",
+"assess.l.category":"زمرہ","assess.l.section":"متعلقہ دفعہ","assess.l.sectionv":"آن لائن پیچھا کرنا اور دھمکیاں",
+"assess.l.body":"رپورٹنگ ادارہ","assess.l.bodyv":"ایف آئی اے سائبر کرائم ونگ",
+"assess.checkedTitle":"کیا جانچا گیا","assess.checkedSub":"اس تشخیص کے پیچھے",
+"assess.c.corr":"شواہد آپس میں ملتے ہیں","assess.c.corrv":"جی ہاں",
+"assess.c.integ":"فائلیں اصلی ہیں","assess.c.integv":"جی ہاں، غیر تبدیل شدہ",
+"assess.c.escal":"وقت کے ساتھ بگڑتا معاملہ","assess.c.escalv":"جی ہاں",
+"assess.c.dup":"دہرائے گئے پیغامات","assess.c.dupv":"کوئی نہیں ملا",
+"assess.recTitle":"تجویز",
+"assess.recText":"دو پلیٹ فارمز پر دہرائی گئی، واضح دھمکی اور ملتے جلتے شواہد کے پیشِ نظر، ہماری تجویز ہے کہ جلد باقاعدہ رپورٹ کی طرف بڑھیں۔ کچھ بھی جمع کروانے سے پہلے کسی شخص کو اس کا جائزہ ضرور لینا چاہیے۔",
+
+"timeline.pageTitle":"معاملات کیسے آگے بڑھے",
+"timeline.pageDesc":"ہر شہادت کو اُسی ترتیب میں رکھا گیا ہے جس میں وہ پیش آئی۔ یہ اکثر آپ کے کیس کا جائزہ لینے والے کو شدت کے بڑھتے رجحان کو واضح دکھانے کا بہترین طریقہ ہے۔",
+"timeline.t1":"پہلا رابطہ","timeline.d1":"ایک نامعلوم اکاؤنٹ نے انسٹاگرام پر پیغام بھیجا۔",
+"timeline.t2":"پیغامات کی تکرار","timeline.d2":"واٹس ایپ پر دوسرے اکاؤنٹ سے ملتے جلتے پیغامات بھیجے گئے۔",
+"timeline.t3":"براہِ راست دھمکی","timeline.d3":"نقصان کی واضح دھمکی بھیجی گئی جس میں آپ کے کام کی جگہ کا ذکر تھا۔",
+"timeline.t4":"ذاتی معلومات افشا","timeline.d4":"اسی اکاؤنٹ نے ایک گروپ چیٹ میں آپ کا پتہ شیئر کیا۔",
+
+"vault.pageTitle":"آپ کا شواہد کا محفوظ خانہ",
+"vault.pageDesc":"ہر فائل یہاں محفوظ حالت میں رکھی جاتی ہے، ایک ایسے فنگر پرنٹ کے ساتھ جو ثابت کرتا ہے کہ شامل کیے جانے کے دن سے اس میں کوئی تبدیلی نہیں ہوئی۔",
+"vault.v1meta":"واٹس ایپ اسکرین شاٹ · 2 ستمبر 2026 کو شامل کی گئی",
+"vault.v2meta":"انسٹاگرام چیٹ ایکسپورٹ · 2 ستمبر 2026 کو شامل کی گئی",
+"vault.v3meta":"ذاتی نوٹس · 3 ستمبر 2026 کو شامل کی گئی",
+"vault.detail":"کوئی تبدیلی نہیں ہوئی · ابھی جانچا گیا · صرف آپ کو نظر آتا ہے",
+"vault.locked":"غیر تبدیل شدہ",
+"vault.footnote":"جب بھی آپ محفوظ خانہ کھولتے ہیں، ہر فائل کا اس کے اصل فنگر پرنٹ سے موازنہ کیا جاتا ہے۔",
+"vault.demoLabel":"نمائشی جھلک، صرف مثال کے طور پر",
+"vault.wa.m1":"آپ میرے پیغامات کو کیوں نظر انداز کر رہے ہیں؟",
+"vault.wa.m2":"مجھے پتہ ہے آپ کہاں کام کرتے ہیں۔ ہوشیار رہیں۔",
+"vault.wa.m3":"براہِ مہربانی مجھے پیغام بھیجنا بند کریں۔",
+"vault.wa.m4":"یہ ابھی ختم نہیں ہوا۔",
+"vault.ig.contact":"fake_ameer.92",
+"vault.ig.m1":"سب کو دیکھنا چاہیے کہ آپ اصل میں کیسے انسان ہیں۔",
+"vault.ig.m2":"آپ کے گھر کا پتہ ڈھونڈنا کچھ مشکل نہیں۔",
+"vault.ig.m3":"اب کہیں چھپنے کی جگہ نہیں۔",
+"vault.note.text":"میں نے یہ نوٹس انسٹاگرام پر پہلے پیغام کے بعد لکھنا شروع کیے، تاکہ میں یہ نہ بھولوں کہ سب کچھ کیسے ہوا۔ اب تقریباً ایک ہفتہ ہو چکا ہے اور پیغامات رکنے کے بجائے مزید بڑھ گئے ہیں۔ میں خوفزدہ ہوں، لیکن جب میں تیار ہوں گی تو کسی کو دکھانے کے لیے سب کچھ لکھ رہی ہوں۔",
+
+"report.pageTitle":"اپنی رپورٹ تیار کریں",
+"report.pageDesc":"یہ ٹائم لائن، تشخیص، اور شواہد — سب کچھ ایک دستاویز میں یکجا کر دیتا ہے جسے آپ کسی قابلِ اعتماد شخص یا متعلقہ اداروں کے پاس لے جا سکتے ہیں۔",
+"report.includedTitle":"اس میں کیا شامل ہے",
+"report.i1":"کیس کا خلاصہ","report.i2":"ٹائم لائن","report.i3":"شدت اور قانونی نوٹس","report.i4":"شواہد کے فنگر پرنٹس","report.i5":"تجویز کردہ اگلے اقدامات",
+"report.generate":"پی ڈی ایف رپورٹ بنائیں",
+"report.generated":"✓ رپورٹ تیار ہو گئی",
+"report.placeholder":"آپ کی رپورٹ ابھی تک تیار نہیں ہوئی۔ جھلک دیکھنے کے لیے نیچے \"پی ڈی ایف رپورٹ بنائیں\" پر کلک کریں۔",
+"report.heading":"فرد نامہ شواہد رپورٹ",
+"report.sub":"کیس FN-2291 · 3 ستمبر 2026 کو تیار کی گئی",
+"report.sSummary":"خلاصہ","report.sSummaryv":"دو پلیٹ فارمز سے چار شواہد جمع کیے گئے، جو ہراسانی کے بڑھتے رجحان اور ایک براہِ راست دھمکی کو ظاہر کرتے ہیں۔",
+"report.sSeverity":"شدت","report.sSeverityv":"انتہائی سنگین — ترجیحی جائزے کی سفارش۔",
+"report.sLegal":"قانونی حوالہ","report.sLegalv":"پیکا 2016، آن لائن پیچھا کرنا اور دھمکیاں۔",
+"report.sEvidence":"شواہد","report.sEvidencev":"3 فائلیں، ہر ایک کا فنگر پرنٹ اور وقت درج ہے۔",
+"report.disclaimer":"یہ رپورٹ آپ کے شواہد کو محفوظ اور دستاویزی شکل دیتی ہے — یہ خود بخود عدالت میں بطور ثبوت قبول نہیں ہوتی۔",
+
+"assistant.pageTitle":"اب آگے کیا کریں",
+"assistant.pageDesc":"اگلا قدم اٹھانے میں مدد کے لیے ایک رہنما — چاہے وہ شکایت درج کروانے کی جگہ تلاش کرنا ہو یا ابھی کسی سے رابطہ کرنا۔",
+"assistant.bot1":"میں نے آپ کی رپورٹ تیار کر لی ہے۔ اس میں موجود معلومات کی بنیاد پر، عام طور پر اگلا مددگار قدم یہ ہوتا ہے۔ آپ کیا کرنا چاہیں گے؟",
+"assistant.user1":"میں شکایت کہاں درج کروا سکتا/سکتی ہوں؟",
+"assistant.bot2a":"ایسے معاملات ایف آئی اے سائبر کرائم ونگ دیکھتا ہے۔ آپ کا قریب ترین دفتر یہ ہے:",
+"assistant.bot2b":"ایف آئی اے سائبر کرائم رپورٹنگ سینٹر — اسلام آباد",
+"assistant.bot2c":"آپ کے کیس کی شدت کے پیشِ نظر، اسے انتظار کرنے کے بجائے جلد کر لینا بہتر ہے۔",
+"assistant.qr1":"پتہ دکھائیں","assistant.qr2":"میں کیا ساتھ لے کر جاؤں؟","assistant.qr3":"میں ابھی تیار نہیں",
+"assistant.reply1":"یہ ایف آئی اے سائبر کرائم رپورٹنگ سینٹر، آبپارہ، اسلام آباد ہے۔ پیر تا ہفتہ، صبح 9 بجے سے شام 5 بجے تک کھلا رہتا ہے۔",
+"assistant.reply2":"اپنے ساتھ ایک درست شناختی کارڈ اور اپنی پرنٹ شدہ یا ڈیجیٹل رپورٹ لے جائیں — پچھلے مرحلے کی PDF ہر ضروری چیز پر مشتمل ہے۔",
+"assistant.reply3":"کوئی بات نہیں۔ آپ کی رپورٹ اور شواہد یہاں محفوظ رہیں گے، جب بھی آپ تیار ہوں۔",
+"assistant.beforeTitle":"جانے سے پہلے",
+"assistant.b1":"آپ کی پی ڈی ایف رپورٹ","assistant.b1v":"تیار",
+"assistant.b2":"درست شناختی کارڈ","assistant.b2v":"ساتھ لے جائیں",
+"assistant.b3":"شواہد کی پرنٹ کاپی","assistant.b3v":"اختیاری",
+"assistant.needTitle":"اگر آپ کو ابھی کسی کی ضرورت ہو",
+"assistant.n1":"قابلِ اعتماد رابطہ","assistant.n1v":"مطلع کریں",
+"assistant.n2":"ہیلپ لائن","assistant.n2v":"چوبیس گھنٹے دستیاب",
+
+"safety.pageTitle":"حفاظتی آلات",
+"safety.pageDesc":"یہ اُن لمحات کے لیے ہیں جو رپورٹ کے مکمل ہونے کا انتظار نہیں کر سکتے۔ یہ ہر صفحے پر دستیاب ہیں، صرف اسی صفحے پر نہیں۔",
+"safety.sosTitle":"ایپ میں کہیں بھی SOS بٹن کو ڈبل کلک کریں",
+"safety.sosSub":"نیچے دائیں کونے میں، ہمیشہ نظر آنے والا",
+"safety.sosText":"اسے ڈبل کلک کرنے سے آپ کا موجودہ محل وقوع آپ کے قابلِ اعتماد رابطوں کو بھیج دیا جاتا ہے اور آپ کو اپنے موجودہ مقام کے قریب ترین محفوظ جگہیں دکھائی جاتی ہیں — اس کے لیے آپ کو جو کچھ کر رہے ہیں اسے چھوڑنے کی ضرورت نہیں۔",
+"safety.tryNow":"ابھی آزمائیں",
+"safety.whoTitle":"کسے مطلع کیا جاتا ہے",
+"safety.w1":"قابلِ اعتماد رابطہ 1","safety.w1v":"والدہ — آمنہ",
+"safety.w2":"قابلِ اعتماد رابطہ 2","safety.w2v":"دوست — زارا",
+"safety.w3":"بھیجا گیا پیغام","safety.w3v":"محل وقوع + مختصر انتباہ",
+"safety.manageNote":"آپ اپنی پروفائل سے کبھی بھی اس فہرست میں تبدیلی کر سکتے ہیں۔",
+"safety.followedTitle":"اگر آپ کا پیچھا کیا جا رہا ہو یا آپ غیر محفوظ محسوس کریں",
+"safety.f1":"قریب ترین پولیس اسٹیشن","safety.f2":"قریب ترین ایف آئی اے سائبر کرائم دفتر","safety.f3":"قریب ترین مصروف عوامی جگہ","safety.fv":"خودکار طور پر دکھایا جاتا ہے",
+"safety.followedNote":"اگر ممکن ہو تو پہلے کسی روشن اور آبادی والی جگہ کی طرف بڑھیں — مدد راستے میں ہے۔",
+"safety.disclaimer":"حقیقی ہنگامی صورتحال میں پہلے اپنے مقامی ہنگامی نمبر پر کال کریں۔ یہ فیچر اس میں مدد دیتا ہے — اس کا متبادل نہیں۔",
+
+"notice.title":"آگے بڑھنے سے پہلے",
+"notice.sub":"براہِ کرم یہ ضرور پڑھیں — اس میں بتایا گیا ہے کہ آپ کے کیس کو کیسے ہینڈل کیا جاتا ہے اور آپ کے کیا حقوق محفوظ رہتے ہیں۔",
+"notice.item1.title":"پیکا 2016 کے مطابق","notice.item1.body":"اس ٹول میں شواہد کی درجہ بندی اور رپورٹنگ کا طریقہ کار الیکٹرانک جرائم کی روک تھام کے ایکٹ 2016 (پیکا) کے مطابق ہے — اس لیے یہاں تیار کی گئی چیزیں اُسی انداز سے مطابقت رکھتی ہیں جیسے ایف آئی اے سائبر کرائم ونگ کیسز کا جائزہ لیتا ہے۔",
+"notice.item2.title":"آپ کے شواہد بطور ڈیفالٹ نجی ہیں","notice.item2.body":"آپ کی اپلوڈ کردہ ہر چیز محفوظ ہے اور صرف آپ کو نظر آتی ہے۔ آپ کی اجازت کے بغیر کوئی بھی — یہاں تک کہ فرد نامہ کا عملہ بھی — اسے نہیں کھول سکتا۔",
+"notice.item3.title":"کچھ بھی خودکار طور پر جمع نہیں ہوتا","notice.item3.body":"ہم آپ کی رپورٹ، شواہد، یا محل وقوع کبھی بھی خودکار طور پر پولیس، ایف آئی اے، یا کسی اور کو نہیں بھیجتے۔ ہر جمع کروانا آپ کا خود کا ایک ارادی اقدام ہوتا ہے۔",
+"notice.item4.title":"آپ کبھی بھی سب کچھ حذف کر سکتے ہیں","notice.item4.body":"آپ جب چاہیں اپنا کیس ڈیٹا ایکسپورٹ یا مستقل طور پر حذف کر سکتے ہیں — یہاں رکھنے کی کوئی پابندی نہیں۔",
+"notice.item5.title":"نام کے بجائے کیس نمبر سے شناخت","notice.item5.body":"جہاں تک ممکن ہو، آپ کے کیس کا حوالہ آپ کے نام کے بجائے ایک شناختی نمبر سے دیا جاتا ہے، تاکہ جب تک آپ خود فیصلہ نہ کریں، آپ کی شناخت پوشیدہ رہے۔",
+"notice.item6.title":"یہ ہنگامی مدد کا متبادل نہیں","notice.item6.body":"اگر آپ فوری خطرے میں ہیں، تو براہِ راست پولیس یا کسی قابلِ اعتماد شخص سے رابطہ کریں — یہ ٹول اس عمل میں مدد کرتا ہے، اس کا متبادل نہیں۔",
+"notice.agree":"میں نے یہ پڑھ لیا ہے اور سمجھ گیا/گئی ہوں کہ میرے کیس کو کیسے ہینڈل کیا جائے گا۔",
+"notice.continue":"جاری رکھیں",
+
+"login.title":"خوش آمدید",
+"login.sub":"اپنے تفویض کردہ کیس نمبر یا اپنے یوزر نیم سے لاگ اِن کریں۔",
+"login.tabCase":"کیس نمبر","login.tabUser":"یوزر نیم",
+"login.caseLabel":"کیس نمبر","login.caseLabelHint":"آپ کے کاؤنسلر کی جانب سے تفویض کردہ",
+"login.passwordLabel":"پاس ورڈ","login.passwordHint":"پہلی بار لاگ اِن پر خود مقرر کریں",
+"login.usernameLabel":"یوزر نیم","login.usernamePh":"ایک یوزر نیم منتخب کریں",
+"login.loginBtn":"لاگ اِن کریں",
+"login.note":"پہلی بار آئے ہیں؟ نئے کیس نمبر یا یوزر نیم سے لاگ اِن کرتے ہی آپ کا پاس ورڈ مقرر ہو جاتا ہے - الگ سے سائن اپ کی ضرورت نہیں۔",
+
+"sos.hint":"ہنگامی الرٹ کے لیے ڈبل کلک کریں — آپ کا محل وقوع قابلِ اعتماد رابطوں کو بھیجا جائے گا",
+"sos.sendingTitle":"آپ کا محل وقوع بھیجا جا رہا ہے…","sos.sendingText":"آپ کے قابلِ اعتماد رابطوں کو مطلع کیا جا رہا ہے۔ اس میں بس ایک لمحہ لگے گا۔",
+"sos.afterTitle":"آپ اکیلے نہیں ہیں","sos.afterText":"آپ کا موجودہ محل وقوع اور ایک مختصر انتباہی پیغام بھیج دیا گیا ہے۔",
+"sos.status":"✓ محل وقوع 2 قابلِ اعتماد رابطوں کو بھیج دیا گیا",
+"sos.placesHeading":"اس وقت قریب ترین محفوظ جگہیں",
+"sos.place1.name":"ایف آئی اے سائبر کرائم رپورٹنگ سینٹر","sos.place1.sub":"آبپارہ، اسلام آباد",
+"sos.place2.name":"پولیس اسٹیشن آبپارہ","sos.place2.sub":"چوبیس گھنٹے کھلا",
+"sos.place3.name":"شفاء انٹرنیشنل ہسپتال","sos.place3.sub":"ایمرجنسی وارڈ",
+"sos.place4.name":"سینٹورس مال","sos.place4.sub":"مصروف اور روشن عوامی جگہ",
+"sos.close":"بند کریں",
+"sos.note":"یہ ایک پروٹو ٹائپ ہے: براؤزر آپ کے ڈیوائس کے اصل پاور بٹن سے منسلک نہیں ہو سکتا اور نہ ہی حقیقی SMS بھیج سکتا ہے۔ ایک مکمل ایپ میں یہی ڈبل کلک اصل الرٹ بھیجے گا اور قریبی محفوظ مقامات حقیقی وقت میں دکھائے گا۔"
+}
+};
+
+let currentLang = 'en';
+function t(key){ return (I18N[currentLang] && I18N[currentLang][key]) || key; }
+function tf(key, vars){ let s = t(key); for(const k in vars){ s = s.split('{'+k+'}').join(vars[k]); } return s; }
+
+function applyStaticTranslations(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    el.setAttribute('placeholder', t(el.getAttribute('data-i18n-ph')));
+  });
+}
+
+function updateLangButtons(){
+  ['1','2','3'].forEach(n=>{
+    const en = document.getElementById('langBtnEn'+n);
+    const ur = document.getElementById('langBtnUr'+n);
+    if(en) en.classList.toggle('active', currentLang==='en');
+    if(ur) ur.classList.toggle('active', currentLang==='ur');
+  });
+}
+
+function setLang(lang){
+  currentLang = lang;
+  document.getElementById('htmlRoot').setAttribute('dir', lang==='ur' ? 'rtl':'ltr');
+  document.getElementById('htmlRoot').setAttribute('lang', lang==='ur' ? 'ur':'en');
+  document.body.classList.toggle('urdu-font', lang==='ur');
+  applyStaticTranslations();
+  updateLangButtons();
+  if(!document.getElementById('appRoot').classList.contains('hidden')){
+    renderSidebar();
+    renderMain();
+  }
+}
+
+/* ============== GATE FLOW ============== */
+function showLogin(){
+  document.getElementById('noticeScreen').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+}
+function switchLoginTab(which){
+  document.getElementById('tabCase').classList.toggle('active', which==='case');
+  document.getElementById('tabUser').classList.toggle('active', which==='user');
+  document.getElementById('caseLogin').classList.toggle('hidden', which!=='case');
+  document.getElementById('userLogin').classList.toggle('hidden', which!=='user');
+}
+function showApp(){
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('appRoot').classList.remove('hidden');
+  document.getElementById('sosRoot').classList.remove('hidden');
+  renderSidebar();
+  renderMain();
+}
+
+/* ============== SOS ============== */
+function triggerSOS(){
+  const overlay = document.getElementById('sosOverlay');
+  const title = document.getElementById('sosTitle');
+  const text = document.getElementById('sosText');
+  const status = document.getElementById('sosStatus');
+  const places = document.getElementById('sosPlaces');
+  status.classList.remove('show'); places.style.display='none';
+  title.textContent = t('sos.sendingTitle');
+  text.textContent = t('sos.sendingText');
+  overlay.classList.add('show');
+  setTimeout(() => {
+    title.textContent = t('sos.afterTitle');
+    text.textContent = t('sos.afterText');
+    status.classList.add('show');
+    places.style.display = 'block';
+  }, 1200);
+}
+function closeSOS(){
+  document.getElementById('sosOverlay').classList.remove('show');
+}
+
+/* ============== STEPS ============== */
+const steps = [
+  { key:'upload', titleKey:'step.upload.title', descKey:'step.upload.desc',
+    render: () => `
+      <h1 class="page-title">${t('upload.pageTitle')}</h1>
+      <p class="page-desc">${t('upload.pageDesc')}</p>
+      <div class="card">
+        <div class="dropzone">
+          <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 4V15M12 4L8 8M12 4L16 8" stroke="#6E7B4B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16V17.5C4 18.9 5.1 20 6.5 20H17.5C18.9 20 20 18.9 20 17.5V16" stroke="#6E7B4B" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <strong>${t('upload.dropTitle')}</strong>
+          <p>${t('upload.dropDesc')}</p>
+          <div class="chip-row">
+            <span class="chip" onclick="toggleChip(this)">${t('upload.chip.whatsapp')}</span><span class="chip" onclick="toggleChip(this)">${t('upload.chip.instagram')}</span><span class="chip" onclick="toggleChip(this)">${t('upload.chip.messenger')}</span>
+            <span class="chip" onclick="toggleChip(this)">${t('upload.chip.discord')}</span><span class="chip" onclick="toggleChip(this)">${t('upload.chip.snapchat')}</span><span class="chip" onclick="toggleChip(this)">${t('upload.chip.plaintext')}</span>
+          </div>
+          <div style="margin-top:20px;"><button class="btn btn-primary" onclick="confirmUpload(this)">${t('upload.chooseFiles')}</button></div>
+          <div class="upload-confirm" style="display:none; font-size:12.5px; color:var(--olive-deep); font-weight:600; margin-top:10px;">${t('upload.uploadConfirm')}</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>${t('upload.captureTitle')}</h3>
+          <div class="sub">${t('upload.captureSub')}</div>
+          <ul class="field-list">
+            <li>${t('upload.f.timestamp')} <b>${t('common.autoDetected')}</b></li>
+            <li>${t('upload.f.device')} <b>${t('common.autoDetected')}</b></li>
+            <li>${t('upload.f.platform')} <b>${t('common.autoDetected')}</b></li>
+            <li>${t('upload.f.filesize')} <b>${t('common.autoDetected')}</b></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>${t('upload.accountTitle')}</h3>
+          <div class="sub">${t('upload.accountSub')}</div>
+          <ul class="field-list">
+            <li>${t('upload.a.signin')} <b>${t('upload.a.signinv')}</b></li>
+            <li>${t('upload.a.created')} <b class="ltr-num">Sep 2, 2026</b></li>
+            <li>${t('upload.a.reset')} <b>${t('upload.a.resetv')}</b></li>
+            <li>${t('upload.a.access')} <b>${t('upload.a.accessv')}</b></li>
+          </ul>
+        </div>
+      </div>
+      <div class="disclaimer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r="0.8" fill="currentColor"/></svg>
+        ${t('upload.disclaimer')}
+      </div>
+    `
+  },
+  { key:'processing', titleKey:'step.processing.title', descKey:'step.processing.desc',
+    render: () => `
+      <h1 class="page-title">${t('processing.pageTitle')}</h1>
+      <p class="page-desc">${t('processing.pageDesc')}</p>
+      <div class="card">
+        <h3>${t('processing.queueTitle')}</h3>
+        <div class="sub">${t('processing.queueSub')}</div>
+        <div class="proc-step"><div class="proc-icon">✓</div><div><div class="proc-title">${t('processing.p1')}</div><div class="proc-desc">IMG_0231.png · WhatsApp</div></div><div class="proc-meta">${t('common.done')}</div></div>
+        <div class="proc-step"><div class="proc-icon">✓</div><div><div class="proc-title">${t('processing.p2')}</div><div class="proc-desc">export.json · Instagram</div></div><div class="proc-meta">${t('common.done')}</div></div>
+        <div class="proc-step"><div class="proc-icon">✓</div><div><div class="proc-title">${t('processing.p3')}</div><div class="proc-desc">${t('processing.p3d')}</div></div><div class="proc-meta">${t('common.done')}</div></div>
+        <div class="proc-step"><div class="proc-icon pending">…</div><div><div class="proc-title">${t('processing.p4')}</div><div class="proc-desc">complaint_notes.docx</div></div><div class="proc-meta">${t('common.inProgress')}</div></div>
+      </div>
+      <div class="card">
+        <h3>${t('processing.checkTitle')}</h3>
+        <div class="sub">${t('processing.checkSub')}</div>
+        <div class="recommend">${t('processing.checkText')}</div>
+      </div>
+    `
+  },
+  { key:'classify', titleKey:'step.classify.title', descKey:'step.classify.desc',
+    render: () => `
+      <h1 class="page-title">${t('classify.pageTitle')}</h1>
+      <p class="page-desc">${t('classify.pageDesc')}</p>
+      <div class="card">
+        <h3>${t('classify.patternsTitle')}</h3>
+        <div class="sub">${t('classify.patternsSub')}</div>
+        <div class="tag-row"><div class="tag-name">${t('classify.t.threats')}</div><div class="bar-track"><div class="bar-fill" style="width:88%"></div></div><div class="tag-pct">88%</div></div>
+        <div class="tag-row"><div class="tag-name">${t('classify.t.harassment')}</div><div class="bar-track"><div class="bar-fill" style="width:74%"></div></div><div class="tag-pct">74%</div></div>
+        <div class="tag-row"><div class="tag-name">${t('classify.t.doxxing')}</div><div class="bar-track"><div class="bar-fill" style="width:52%"></div></div><div class="tag-pct">52%</div></div>
+        <div class="tag-row"><div class="tag-name">${t('classify.t.impersonation')}</div><div class="bar-track"><div class="bar-fill" style="width:23%"></div></div><div class="tag-pct">23%</div></div>
+        <div class="tag-row"><div class="tag-name">${t('classify.t.hate')}</div><div class="bar-track"><div class="bar-fill" style="width:12%"></div></div><div class="tag-pct">12%</div></div>
+      </div>
+      <div class="card">
+        <h3>${t('classify.closerTitle')}</h3>
+        <div class="sub">${t('classify.closerSub')}</div>
+        <div class="recommend">${t('classify.closerText')}</div>
+      </div>
+    `
+  },
+  { key:'assess', titleKey:'step.assess.title', descKey:'step.assess.desc',
+    render: () => `
+      <h1 class="page-title">${t('assess.pageTitle')}</h1>
+      <p class="page-desc">${t('assess.pageDesc')}</p>
+      <div class="card">
+        <h3>${t('assess.sevTitle')}</h3>
+        <div class="sub">${t('assess.sevSub')}</div>
+        <div class="sev-wrap">
+          <div class="sev-badge"><div class="n">${t('assess.badgeLevel')}</div><div class="l">${t('assess.badgeSub')}</div></div>
+          <div class="sev-scale">
+            <div class="sev-item"><div class="sev-label">${t('assess.low')}</div><div class="sev-bar"><i style="width:100%; background:var(--olive-soft);"></i></div></div>
+            <div class="sev-item"><div class="sev-label">${t('assess.medium')}</div><div class="sev-bar"><i style="width:100%; background:var(--chestnut);"></i></div></div>
+            <div class="sev-item"><div class="sev-label">${t('assess.high')}</div><div class="sev-bar"><i style="width:100%; background:#A85B3F;"></i></div></div>
+            <div class="sev-item"><div class="sev-label">${t('assess.critical')}</div><div class="sev-bar"><i style="width:100%; background:var(--brick);"></i></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>${t('assess.legalTitle')}</h3>
+          <div class="sub">${t('assess.legalSub')}</div>
+          <dl class="kv-grid">
+            <dt>${t('assess.l.category')}</dt><dd><span class="pill ltr-num">PECA 2016</span></dd>
+            <dt>${t('assess.l.section')}</dt><dd>${t('assess.l.sectionv')}</dd>
+            <dt>${t('assess.l.body')}</dt><dd>${t('assess.l.bodyv')}</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <h3>${t('assess.checkedTitle')}</h3>
+          <div class="sub">${t('assess.checkedSub')}</div>
+          <ul class="field-list">
+            <li>${t('assess.c.corr')} <b>${t('assess.c.corrv')}</b></li>
+            <li>${t('assess.c.integ')} <b>${t('assess.c.integv')}</b></li>
+            <li>${t('assess.c.escal')} <b>${t('assess.c.escalv')}</b></li>
+            <li>${t('assess.c.dup')} <b>${t('assess.c.dupv')}</b></li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <h3>${t('assess.recTitle')}</h3>
+        <div class="recommend">${t('assess.recText')}</div>
+      </div>
+    `
+  },
+  { key:'timeline', titleKey:'step.timeline.title', descKey:'step.timeline.desc',
+    render: () => `
+      <h1 class="page-title">${t('timeline.pageTitle')}</h1>
+      <p class="page-desc">${t('timeline.pageDesc')}</p>
+      <div class="card">
+        <div class="tl">
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-date ltr-num">Aug 28, 2026 · 9:14 PM</div><div class="tl-title">${t('timeline.t1')}</div><div class="tl-desc">${t('timeline.d1')}</div></div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-date ltr-num">Aug 30, 2026 · 11:02 PM</div><div class="tl-title">${t('timeline.t2')}</div><div class="tl-desc">${t('timeline.d2')}</div></div>
+          <div class="tl-item crit"><div class="tl-dot"></div><div class="tl-date ltr-num">Sep 1, 2026 · 8:47 PM</div><div class="tl-title">${t('timeline.t3')}</div><div class="tl-desc">${t('timeline.d3')}</div></div>
+          <div class="tl-item crit"><div class="tl-dot"></div><div class="tl-date ltr-num">Sep 2, 2026 · 7:20 PM</div><div class="tl-title">${t('timeline.t4')}</div><div class="tl-desc">${t('timeline.d4')}</div></div>
+        </div>
+      </div>
+    `
+  },
+  { key:'vault', titleKey:'step.vault.title', descKey:'step.vault.desc',
+    render: () => `
+      <h1 class="page-title">${t('vault.pageTitle')}</h1>
+      <p class="page-desc">${t('vault.pageDesc')}</p>
+      <div class="card">
+        <div class="vault-item" onclick="toggleVault(this)">
+          <div class="vault-thumb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="10" r="1.4" fill="currentColor"/><path d="M4 16L9 12L13 15L16 12L20 16" stroke="currentColor" stroke-width="1.4"/></svg></div>
+          <div style="flex:1;">
+            <div class="vault-name">IMG_0231.png</div><div class="vault-meta">${t('vault.v1meta')}</div>
+            <div class="vault-detail">
+              <div class="ev-label">${t('vault.demoLabel')}</div>
+              <div class="chat" style="gap:8px; margin:10px 0;">
+                <div class="msg bot" style="max-width:92%; font-size:12px;">${t('vault.wa.m1')}<div class="ltr-num" style="font-size:10px; opacity:.65; margin-top:4px;">9:10 PM</div></div>
+                <div class="msg bot" style="max-width:92%; font-size:12px;">${t('vault.wa.m2')}<div class="ltr-num" style="font-size:10px; opacity:.65; margin-top:4px;">9:13 PM</div></div>
+                <div class="msg user" style="max-width:92%; font-size:12px;">${t('vault.wa.m3')}<div class="ltr-num" style="font-size:10px; opacity:.65; margin-top:4px;">9:15 PM</div></div>
+                <div class="msg bot" style="max-width:92%; font-size:12px;">${t('vault.wa.m4')}<div class="ltr-num" style="font-size:10px; opacity:.65; margin-top:4px;">9:16 PM</div></div>
+              </div>
+              <div class="vault-trust">${t('vault.detail')}</div>
+            </div>
+          </div>
+          <div class="vault-hash">a13f...9c02<div class="lock-tag">🔒 ${t('vault.locked')}</div></div>
+        </div>
+        <div class="vault-item" onclick="toggleVault(this)">
+          <div class="vault-thumb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z" stroke="currentColor" stroke-width="1.4"/></svg></div>
+          <div style="flex:1;">
+            <div class="vault-name">export.json</div><div class="vault-meta">${t('vault.v2meta')}</div>
+            <div class="vault-detail">
+              <div class="ev-label">${t('vault.demoLabel')}</div>
+              <div class="chat" style="gap:8px; margin:10px 0;">
+                <div class="msg bot" style="max-width:92%; font-size:12px;"><b class="ltr-num">${t('vault.ig.contact')}</b><br>${t('vault.ig.m1')}<div class="ltr-num" style="font-size:10px; opacity:.65; margin-top:4px;">7:02 PM</div></div>
+                <div class="msg bot" style="max-width:92%; font-size:12px;">${t('vault.ig.m2')}<div class="ltr-num" style="font-size:10px; opacity:.65; margin-top:4px;">7:05 PM</div></div>
+                <div class="msg bot" style="max-width:92%; font-size:12px;">${t('vault.ig.m3')}<div class="ltr-num" style="font-size:10px; opacity:.65; margin-top:4px;">7:08 PM</div></div>
+              </div>
+              <div class="vault-trust">${t('vault.detail')}</div>
+            </div>
+          </div>
+          <div class="vault-hash">7e2b...41ff<div class="lock-tag">🔒 ${t('vault.locked')}</div></div>
+        </div>
+        <div class="vault-item" onclick="toggleVault(this)">
+          <div class="vault-thumb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z" stroke="currentColor" stroke-width="1.4"/></svg></div>
+          <div style="flex:1;">
+            <div class="vault-name">complaint_notes.docx</div><div class="vault-meta">${t('vault.v3meta')}</div>
+            <div class="vault-detail">
+              <div class="ev-label">${t('vault.demoLabel')}</div>
+              <div class="recommend" style="font-style:italic; margin:10px 0;">${t('vault.note.text')}</div>
+              <div class="vault-trust">${t('vault.detail')}</div>
+            </div>
+          </div>
+          <div class="vault-hash">c908...1a4e<div class="lock-tag">🔒 ${t('vault.locked')}</div></div>
+        </div>
+      </div>
+      <div class="disclaimer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M8 10V7a4 4 0 018 0v3" stroke="currentColor" stroke-width="1.4"/></svg>
+        ${t('vault.footnote')}
+      </div>
+    `
+  },
+  { key:'report', titleKey:'step.report.title', descKey:'step.report.desc',
+    render: () => `
+      <h1 class="page-title">${t('report.pageTitle')}</h1>
+      <p class="page-desc">${t('report.pageDesc')}</p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>${t('report.includedTitle')}</h3>
+          <ul class="field-list">
+            <li>${t('report.i1')} <b>${t('common.included')}</b></li>
+            <li>${t('report.i2')} <b>${t('common.included')}</b></li>
+            <li>${t('report.i3')} <b>${t('common.included')}</b></li>
+            <li>${t('report.i4')} <b>${t('common.included')}</b></li>
+            <li>${t('report.i5')} <b>${t('common.included')}</b></li>
+          </ul>
+          <div style="margin-top:18px;"><button class="btn btn-primary" id="genReportBtn" onclick="generateReport(this)">${t('report.generate')}</button></div>
+        </div>
+        <div class="card" style="padding:0; overflow:hidden;">
+          <div class="report-preview">
+            <div id="reportPlaceholder" class="report-placeholder">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z" stroke="currentColor" stroke-width="1.4"/><path d="M9 13h6M9 16.5h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              ${t('report.placeholder')}
+            </div>
+            <div id="reportGenerated" class="hidden">
+              <h4>${t('report.heading')}</h4>
+              <div class="rp-sub">${t('report.sub')}</div>
+              <div class="rp-section"><b>${t('report.sSummary')}</b>${t('report.sSummaryv')}</div>
+              <div class="rp-section"><b>${t('report.sSeverity')}</b>${t('report.sSeverityv')}</div>
+              <div class="rp-section"><b>${t('report.sLegal')}</b>${t('report.sLegalv')}</div>
+              <div class="rp-section"><b>${t('report.sEvidence')}</b>${t('report.sEvidencev')}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="disclaimer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r="0.8" fill="currentColor"/></svg>
+        ${t('report.disclaimer')}
+      </div>
+    `
+  },
+  { key:'assistant', titleKey:'step.assistant.title', descKey:'step.assistant.desc',
+    render: () => `
+      <h1 class="page-title">${t('assistant.pageTitle')}</h1>
+      <p class="page-desc">${t('assistant.pageDesc')}</p>
+      <div class="card">
+        <div class="chat">
+          <div class="msg bot">${t('assistant.bot1')}</div>
+          <div class="msg user">${t('assistant.user1')}</div>
+          <div class="msg bot">
+            ${t('assistant.bot2a')}<br><br>
+            <b>${t('assistant.bot2b')}</b><br>
+            ${t('assistant.bot2c')}
+            <div class="quick-replies">
+              <span class="qr" onclick="chatReply(this, '${t('assistant.reply1').replace(/'/g,"\\'")}')">${t('assistant.qr1')}</span>
+              <span class="qr" onclick="chatReply(this, '${t('assistant.reply2').replace(/'/g,"\\'")}')">${t('assistant.qr2')}</span>
+              <span class="qr" onclick="chatReply(this, '${t('assistant.reply3').replace(/'/g,"\\'")}')">${t('assistant.qr3')}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>${t('assistant.beforeTitle')}</h3>
+          <ul class="field-list">
+            <li>${t('assistant.b1')} <b>${t('assistant.b1v')}</b></li>
+            <li>${t('assistant.b2')} <b>${t('assistant.b2v')}</b></li>
+            <li>${t('assistant.b3')} <b>${t('assistant.b3v')}</b></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>${t('assistant.needTitle')}</h3>
+          <ul class="field-list">
+            <li>${t('assistant.n1')} <b>${t('assistant.n1v')}</b></li>
+            <li>${t('assistant.n2')} <b>${t('assistant.n2v')}</b></li>
+          </ul>
+        </div>
+      </div>
+    `
+  },
+  { key:'safety', titleKey:'step.safety.title', descKey:'step.safety.desc',
+    render: () => `
+      <h1 class="page-title">${t('safety.pageTitle')}</h1>
+      <p class="page-desc">${t('safety.pageDesc')}</p>
+      <div class="card">
+        <h3>${t('safety.sosTitle')}</h3>
+        <div class="sub">${t('safety.sosSub')}</div>
+        <div class="recommend">${t('safety.sosText')}</div>
+        <div style="margin-top:16px;"><button class="btn btn-primary" onclick="triggerSOS()">${t('safety.tryNow')}</button></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>${t('safety.whoTitle')}</h3>
+          <ul class="field-list">
+            <li>${t('safety.w1')} <b>${t('safety.w1v')}</b></li>
+            <li>${t('safety.w2')} <b>${t('safety.w2v')}</b></li>
+            <li>${t('safety.w3')} <b>${t('safety.w3v')}</b></li>
+          </ul>
+          <div class="sub" style="margin-top:14px;">${t('safety.manageNote')}</div>
+        </div>
+        <div class="card">
+          <h3>${t('safety.followedTitle')}</h3>
+          <ul class="field-list">
+            <li>${t('safety.f1')} <b>${t('safety.fv')}</b></li>
+            <li>${t('safety.f2')} <b>${t('safety.fv')}</b></li>
+            <li>${t('safety.f3')} <b>${t('safety.fv')}</b></li>
+          </ul>
+          <div class="sub" style="margin-top:14px;">${t('safety.followedNote')}</div>
+        </div>
+      </div>
+      <div class="disclaimer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r="0.8" fill="currentColor"/></svg>
+        ${t('safety.disclaimer')}
+      </div>
+    `
+  },
+];
+
+const pathList = document.getElementById('pathList');
+const mainContent = document.getElementById('mainContent');
+let activeIndex = 0;
+
+function renderSidebar(){
+  pathList.innerHTML = steps.map((s,i) => `
+    <li class="${i===activeIndex?'active':(i<activeIndex?'done':'')}">
+      <button onclick="goTo(${i})">
+        <div class="dot">${i<activeIndex ? '✓' : i+1}</div>
+        <div class="step-copy">
+          <div class="step-title">${t(s.titleKey)}</div>
+          <div class="step-desc">${t(s.descKey)}</div>
+        </div>
+      </button>
+    </li>
+  `).join('');
+}
+
+function renderMain(){
+  const s = steps[activeIndex];
+  const isFirst = activeIndex === 0;
+  const isLast = activeIndex === steps.length - 1;
+  const nextLabel = isLast ? t('nav.finish') : tf('nav.continueTo', {name: t(steps[activeIndex+1].titleKey)});
+
+  const nav = `
+    <div class="page-nav">
+      ${isFirst ? `<div class="side">${t('nav.startMsg')}</div>` : `
+        <button class="btn btn-back" onclick="prevStep()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          ${t('nav.back')}
+        </button>`}
+      ${isLast ? `<div class="side">${t('nav.doneMsg')}</div>` : `
+        <button class="btn btn-next" onclick="nextStep()">
+          ${nextLabel}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>`}
+    </div>`;
+
+  mainContent.className = 'main fade-in';
+  mainContent.innerHTML = `<div class="crumb">${tf('crumb.template', {n: activeIndex+1, total: steps.length})}</div><div class="title-kicker"></div>` + s.render() + nav;
+  mainContent.scrollTop = 0;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function goTo(i){
+  activeIndex = i;
+  renderSidebar();
+  renderMain();
+}
+function nextStep(){ if(activeIndex < steps.length - 1) goTo(activeIndex + 1); }
+function prevStep(){ if(activeIndex > 0) goTo(activeIndex - 1); }
+
+function toggleChip(el){ el.classList.toggle('selected'); }
+function confirmUpload(el){
+  const zone = el.closest('.dropzone');
+  zone.querySelector('.upload-confirm').style.display = 'block';
+}
+function toggleVault(el){ el.classList.toggle('open'); }
+function generateReport(btn){
+  document.getElementById('reportPlaceholder')?.classList.add('hidden');
+  const gen = document.getElementById('reportGenerated');
+  if(gen){ gen.classList.remove('hidden'); gen.classList.add('fade-in'); }
+  if(btn){ btn.disabled = true; btn.textContent = t('report.generated'); }
+}
+function chatReply(el, reply){
+  const chat = el.closest('.chat');
+  el.closest('.msg').querySelector('.quick-replies')?.remove();
+  const userMsg = document.createElement('div');
+  userMsg.className = 'msg user';
+  userMsg.textContent = el.textContent;
+  chat.appendChild(userMsg);
+  const botMsg = document.createElement('div');
+  botMsg.className = 'msg bot';
+  botMsg.textContent = reply;
+  chat.appendChild(botMsg);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+/* init */
+applyStaticTranslations();
+updateLangButtons();
+</script>
+
+</body>
+</html>

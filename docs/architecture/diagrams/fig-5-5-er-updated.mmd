@@ -1,0 +1,109 @@
+---
+config:
+  layout: elk
+---
+erDiagram
+  USER ||--o{ CASE : owns
+  CASE ||--o{ EVIDENCE : contains
+  CASE ||--o{ TIMELINE_EVENT : generates
+  CASE ||--|| SEVERITY_ASSESSMENT : "scored by"
+  CASE ||--|| REPORT : "compiled into"
+  CASE ||--o{ AUDIT_LOG_ENTRY : records
+  CASE ||--|| CASE_MERKLE_TREE : "has one"
+  EVIDENCE ||--o{ CLASSIFICATION : "analyzed as"
+  EVIDENCE ||--o{ CUSTODY_EVENT : produces
+  CASE_MERKLE_TREE ||--o{ CUSTODY_EVENT : "leaf of"
+  CASE_MERKLE_TREE ||--o{ CHAIN_ANCHOR : "anchored as"
+  CHAIN_ANCHOR }o..o| QUARTERLY_CHECKPOINT : "rolled up by (proposed)"
+
+  USER {
+    uuid id PK
+    string email
+    string password_hash
+    datetime created_at
+  }
+  CASE {
+    uuid id PK
+    uuid user_id FK
+    string title
+    string status
+    bytes case_salt
+    string wrapped_key_ref
+    string case_commitment
+    datetime created_at
+  }
+  EVIDENCE {
+    uuid id PK
+    uuid case_id FK
+    string file_type
+    string sha256_original
+    string sha256_copy
+    string cid_original
+    string cid_copy
+    string cid_extracted_text
+    datetime uploaded_at
+  }
+  CUSTODY_EVENT {
+    uuid id PK
+    uuid evidence_id FK
+    int case_seq
+    string stage
+    string output_hash
+    string prev_entry_hash
+    string entry_hash
+    datetime timestamp
+  }
+  CASE_MERKLE_TREE {
+    uuid case_id PK
+    string case_root
+    int leaf_count
+    datetime updated_at
+  }
+  CHAIN_ANCHOR {
+    int id PK
+    uuid case_id FK
+    string case_commitment
+    int anchor_index
+    string case_root
+    int leaf_count
+    string tx_hash
+    int block_number
+    datetime anchored_at
+  }
+  QUARTERLY_CHECKPOINT {
+    int epoch PK
+    string super_root
+    string tx_hash
+    datetime proposed_at
+  }
+  CLASSIFICATION {
+    uuid id PK
+    uuid evidence_id FK
+    string labels
+    float confidence
+  }
+  TIMELINE_EVENT {
+    uuid id PK
+    uuid case_id FK
+    datetime event_time
+    string description
+  }
+  SEVERITY_ASSESSMENT {
+    uuid id PK
+    uuid case_id FK
+    string level
+    string rationale
+  }
+  REPORT {
+    uuid id PK
+    uuid case_id FK
+    string pdf_ref
+    datetime generated_at
+  }
+  AUDIT_LOG_ENTRY {
+    uuid id PK
+    uuid case_id FK
+    string action
+    string actor
+    datetime timestamp
+  }
