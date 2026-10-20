@@ -216,3 +216,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Deployment secrets
+.env
+deployment/secrets/
+deployment/ipfs/swarm.key
+*.pem

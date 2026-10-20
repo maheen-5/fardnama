@@ -1,0 +1,109 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Detect deployment readiness
+        id: detect
+        env:
+          ORACLE_VM_HOST: ${{ secrets.ORACLE_VM_HOST }}
+        run: |
+          present=true
+          if [ ! -f backend/Dockerfile ] || [ ! -f backend/requirements.txt ] || [ ! -d backend/app ]; then
+            present=false
+            echo "::notice title=Deployment skipped::backend/Dockerfile, backend/requirements.txt, and backend/app must all exist before deployment."
+          fi
+
+          ready=true
+          if [ -z "$ORACLE_VM_HOST" ]; then
+            ready=false
+            echo "::notice title=Deployment skipped::ORACLE_VM_HOST secret is not configured."
+          fi
+
+          echo "present=${present}" >> "$GITHUB_OUTPUT"
+          echo "ready=${ready}" >> "$GITHUB_OUTPUT"
+
+      - name: Set lowercase owner
+        if: steps.detect.outputs.present == 'true' && steps.detect.outputs.ready == 'true'
+        run: echo "OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"
+
+      - name: Set up QEMU
+        if: steps.detect.outputs.present == 'true' && steps.detect.outputs.ready == 'true'
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        if: steps.detect.outputs.present == 'true' && steps.detect.outputs.ready == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        if: steps.detect.outputs.present == 'true' && steps.detect.outputs.ready == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push backend image
+        if: steps.detect.outputs.present == 'true' && steps.detect.outputs.ready == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          platforms: linux/arm64,linux/amd64
+          push: true
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/fardnama-backend:${{ github.sha }}
+            ghcr.io/${{ env.OWNER_LC }}/fardnama-backend:latest
+
+      - name: Deploy on Oracle VM
+        if: steps.detect.outputs.present == 'true' && steps.detect.outputs.ready == 'true'
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+          BACKEND_TAG: ${{ github.sha }}
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.ORACLE_VM_HOST }}
+          username: ${{ secrets.ORACLE_VM_USER }}
+          key: ${{ secrets.ORACLE_VM_SSH_KEY }}
+          envs: GHCR_TOKEN,GHCR_USER,BACKEND_TAG
+          script: |
+            set -e
+            cd ~/fardnama
+            git fetch origin main
+            git checkout main
+            git pull --ff-only
+            cd deployment
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            BACKEND_TAG=$BACKEND_TAG docker compose pull backend
+            BACKEND_TAG=$BACKEND_TAG docker compose up -d
+            docker image prune -f
+
+      - name: Smoke test
+        if: steps.detect.outputs.present == 'true' && steps.detect.outputs.ready == 'true'
+        run: |
+          for i in $(seq 1 10); do
+            if curl -sf http://${{ secrets.ORACLE_VM_HOST }}:8000/health; then
+              exit 0
+            fi
+            sleep 6
+          done
+          echo "::error title=Smoke test failed::Backend health check never became healthy on ${ORACLE_VM_HOST}."
+          exit 1
