@@ -1,3 +1,4 @@
+
 """OCR helper for image evidence using Tesseract via pytesseract.
 
 Error contract (important for the upload endpoint):
@@ -20,9 +21,9 @@ from PIL import Image, UnidentifiedImageError
 _WINDOWS_DEFAULT = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 _MISSING_MESSAGE = (
-    "Tesseract OCR was not found by the server process. Install Tesseract and either add it to PATH "
-    "(then restart the terminal running the server) or set the TESSERACT_CMD environment variable "
-    "to the full path of tesseract.exe."
+    "Tesseract OCR was not found by the server process. Install Tesseract and either "
+    "add it to PATH (then restart the terminal running the server) or set the "
+    "TESSERACT_CMD environment variable to the full path of tesseract.exe."
 )
 
 
@@ -49,7 +50,10 @@ def ocr_status() -> dict:
         return {"available": False, "detail": "pytesseract is not installed"}
     _configure_tesseract(pytesseract)
     try:
-        return {"available": True, "tesseract_version": str(pytesseract.get_tesseract_version())}
+        return {
+            "available": True,
+            "tesseract_version": str(pytesseract.get_tesseract_version()),
+        }
     except pytesseract.TesseractNotFoundError:
         return {"available": False, "detail": _MISSING_MESSAGE}
 
@@ -60,7 +64,8 @@ def extract_text_from_image_bytes(image_bytes: bytes, language: str = "eng") -> 
         import pytesseract
     except ImportError as exc:
         raise RuntimeError(
-            "OCR dependency is missing. Install Python requirements and the Tesseract OCR system package."
+            "OCR dependency is missing. Install Python requirements and the Tesseract "
+            "OCR system package."
         ) from exc
 
     _configure_tesseract(pytesseract)

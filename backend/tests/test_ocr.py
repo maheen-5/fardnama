@@ -1,13 +1,16 @@
+
 """OCR test uses a generated sample image, so it needs a working Tesseract install."""
-from PIL import Image, ImageDraw, ImageFont
+
+import io
+
 import pytest
+from PIL import Image, ImageDraw
 
 from app.services.ocr import extract_text_from_image_bytes
-import io
 
 
 def test_ocr_extracts_text_from_sample_screenshot():
-    # Use a plain white image and a common font; Tesseract's exact spacing may vary.
+    # Use a plain white image; Tesseract's exact spacing may vary.
     image = Image.new("RGB", (900, 220), "white")
     draw = ImageDraw.Draw(image)
     draw.text((25, 70), "FardNama evidence test 12345", fill="black")
@@ -32,5 +35,6 @@ def test_ocr_missing_tesseract_raises_runtime_error_not_value_error(monkeypatch)
     monkeypatch.setenv("TESSERACT_CMD", "/definitely/not/here/tesseract")
     buffer = io.BytesIO()
     Image.new("RGB", (50, 20), "white").save(buffer, format="PNG")
+
     with pytest.raises(RuntimeError):
         extract_text_from_image_bytes(buffer.getvalue())
