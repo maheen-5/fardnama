@@ -1,0 +1,49 @@
+======================================================================
+FARDNAMA MID-1 CORE MODULE DEMO   2026-10-21 01:48:08
+======================================================================
+
+[0] Server health
+  /health -> {'status': 'ok', 'ocr': {'available': True, 'tesseract_version': '5.5.3.20260724'}}
+  [PASS] server is up
+  [PASS] Tesseract OCR is usable by the SERVER process
+
+[1] Upload -> SHA-256 -> OCR (synthetic screenshot)
+  local SHA-256 of the file before upload : c10cb823701c99794b0891e4a77d899696e23e962a31c4289cce7ef522380547
+  HTTP status                             : 201
+  [PASS] upload accepted (201)
+  evidence_id                             : 44f99ac8-e0a6-4e4c-b2c7-06ec82637608
+  size_bytes                              : 15116
+  server SHA-256                          : c10cb823701c99794b0891e4a77d899696e23e962a31c4289cce7ef522380547
+  ocr_status                              : completed
+  extracted_text                          : 'SYNTHETIC SAMPLE - NOT REAL EVIDENCE\n\nFardNama evidence test 12345\n\nYou will regret this tomorrow'
+  [PASS] server hash equals independently computed hash
+  [PASS] OCR completed
+  [PASS] OCR text contains expected words
+
+[2] Original stored unchanged; tamper detection
+  [PASS] stored file is byte-for-byte identical to the upload
+  [PASS] re-hashing the stored file matches the recorded SHA-256
+  hash after flipping ONE bit in a copy   : 5ef976f8fdf0a771fa82b46d584970e93446d0ab4f9652ee5c3d7470a1bec4c5
+  [PASS] single-bit change produces a different hash (tamper detected)
+
+[3] Validation rules
+  [PASS] unsupported file type rejected (415) -> got 415
+  [PASS] missing consent rejected (400) -> got 400
+  [PASS] corrupt image rejected (400) -> got 400
+  [PASS] empty file rejected (400) -> got 400
+  [PASS] plain text accepted, hashed, no OCR (201) -> got 201
+
+[4] Merkle-root prototype over uploaded evidence hashes (NOT a custody ledger)
+  leaves (evidence SHA-256 values): 3
+    leaf 1: c10cb823701c99794b0891e4a77d899696e23e962a31c4289cce7ef522380547
+    leaf 2: 264eb9c5b8c913e2558fc8b3657e6c0f0d1e85860b0edd6a2f3b3ca6c11bb161
+    leaf 3: 573a90759a3ba7e402414e467afb6222e378b1c124496c81a00cd8f73009708d
+  Merkle root                     : 49f27238de107ba5be2dbba86f329b70b4ec857828cfd0a343a11b64abdcc937
+  [PASS] same leaves give the same root (deterministic)
+  Merkle root after altering leaf 2 : 9b41a0c0157dd8bccb4a75f328310adf9b8aacf270f47aa4d51d981e88ec70c5
+  [PASS] altering one leaf changes the root (tamper-evident)
+  [PASS] different evidence sets cannot share a root (no duplicate-leaf ambiguity)
+
+======================================================================
+RESULT: ALL CHECKS PASSED
+======================================================================

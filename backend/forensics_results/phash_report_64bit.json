@@ -1,0 +1,89 @@
+{
+  "generated": "2026-10-20T21:28:05",
+  "reference": "original.png",
+  "reference_phash": "d62b542b542f552d",
+  "hash_bits": 64,
+  "thresholds": {
+    "near_duplicate_max_fraction": 0.1,
+    "possibly_related_max_fraction": 0.25
+  },
+  "comparisons": [
+    {
+      "image": "brightened.png",
+      "sha256_same_as_reference": false,
+      "hash_a": "d62b542b542f552d",
+      "hash_b": "fe29546a543d5469",
+      "hash_bits": 64,
+      "distance": 10,
+      "distance_fraction": 0.1562,
+      "similarity": 0.8438,
+      "verdict": "possibly_related"
+    },
+    {
+      "image": "cropped_top.png",
+      "sha256_same_as_reference": false,
+      "hash_a": "d62b542b542f552d",
+      "hash_b": "d62bd42bd629562a",
+      "hash_bits": 64,
+      "distance": 10,
+      "distance_fraction": 0.1562,
+      "similarity": 0.8438,
+      "verdict": "possibly_related"
+    },
+    {
+      "image": "different_screenshot.png",
+      "sha256_same_as_reference": false,
+      "hash_a": "d62b542b542f552d",
+      "hash_b": "d62b542d562b562b",
+      "hash_bits": 64,
+      "distance": 8,
+      "distance_fraction": 0.125,
+      "similarity": 0.875,
+      "verdict": "possibly_related"
+    },
+    {
+      "image": "edited_one_message.png",
+      "sha256_same_as_reference": false,
+      "hash_a": "d62b542b542f552d",
+      "hash_b": "d62b542b542f552d",
+      "hash_bits": 64,
+      "distance": 0,
+      "distance_fraction": 0.0,
+      "similarity": 1.0,
+      "verdict": "near_duplicate"
+    },
+    {
+      "image": "recompressed_q60.jpg",
+      "sha256_same_as_reference": false,
+      "hash_a": "d62b542b542f552d",
+      "hash_b": "d62b542b542f552d",
+      "hash_bits": 64,
+      "distance": 0,
+      "distance_fraction": 0.0,
+      "similarity": 1.0,
+      "verdict": "near_duplicate"
+    },
+    {
+      "image": "resized_50.png",
+      "sha256_same_as_reference": false,
+      "hash_a": "d62b542b542f552d",
+      "hash_b": "d62b542b542f552d",
+      "hash_bits": 64,
+      "distance": 0,
+      "distance_fraction": 0.0,
+      "similarity": 1.0,
+      "verdict": "near_duplicate"
+    },
+    {
+      "image": "unrelated_image.png",
+      "sha256_same_as_reference": false,
+      "hash_a": "d62b542b542f552d",
+      "hash_b": "fc94166a69c94f68",
+      "hash_bits": 64,
+      "distance": 30,
+      "distance_fraction": 0.4688,
+      "similarity": 0.5312,
+      "verdict": "different"
+    }
+  ]
+}

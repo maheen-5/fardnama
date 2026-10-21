@@ -1,0 +1,89 @@
+{
+  "generated": "2026-10-20T21:27:38",
+  "reference": "original.png",
+  "reference_phash": "d6a8295554aa2b5454aa2d5454aa295564aa2a55d728abf5a0e797f892ffc2af",
+  "hash_bits": 256,
+  "thresholds": {
+    "near_duplicate_max_fraction": 0.1,
+    "possibly_related_max_fraction": 0.25
+  },
+  "comparisons": [
+    {
+      "image": "brightened.png",
+      "sha256_same_as_reference": false,
+      "hash_a": "d6a8295554aa2b5454aa2d5454aa295564aa2a55d728abf5a0e797f892ffc2af",
+      "hash_b": "fea82955540a6a1450a22d55542a695554a862051fb82b77e9e79ffea2dfc2af",
+      "hash_bits": 256,
+      "distance": 36,
+      "distance_fraction": 0.1406,
+      "similarity": 0.8594,
+      "verdict": "possibly_related"
+    },
+    {
+      "image": "cropped_top.png",
+      "sha256_same_as_reference": false,
+      "hash_a": "d6a8295554aa2b5454aa2d5454aa295564aa2a55d728abf5a0e797f892ffc2af",
+      "hash_b": "d6a82b55d4aa2b55d4aa295556aa2a57d708d7186ac768ab295554aaaf54d5ab",
+      "hash_bits": 256,
+      "distance": 80,
+      "distance_fraction": 0.3125,
+      "similarity": 0.6875,
+      "verdict": "different"
+    },
+    {
+      "image": "different_screenshot.png",
+      "sha256_same_as_reference": false,
+      "hash_a": "d6a8295554aa2b5454aa2d5454aa295564aa2a55d728abf5a0e797f892ffc2af",
+      "hash_b": "d6a82b5454aa295556aa2b55562a2b5554aa2d5454a86ab7cabbb0ffb15d91ae",
+      "hash_bits": 256,
+      "distance": 52,
+      "distance_fraction": 0.2031,
+      "similarity": 0.7969,
+      "verdict": "possibly_related"
+    },
+    {
+      "image": "edited_one_message.png",
+      "sha256_same_as_reference": false,
+      "hash_a": "d6a8295554aa2b5454aa2d5454aa295564aa2a55d728abf5a0e797f892ffc2af",
+      "hash_b": "d6a8295554aa2b5454aa295454aa295556aa2a55d528aaf7f2e6973882ffd2bf",
+      "hash_bits": 256,
+      "distance": 16,
+      "distance_fraction": 0.0625,
+      "similarity": 0.9375,
+      "verdict": "near_duplicate"
+    },
+    {
+      "image": "recompressed_q60.jpg",
+      "sha256_same_as_reference": false,
+      "hash_a": "d6a8295554aa2b5454aa2d5454aa295564aa2a55d728abf5a0e797f892ffc2af",
+      "hash_b": "d6a8295554aa2b5454aa2d5454aa295564aa2a55d728abf5a0e7977892ffc2bf",
+      "hash_bits": 256,
+      "distance": 2,
+      "distance_fraction": 0.0078,
+      "similarity": 0.9922,
+      "verdict": "near_duplicate"
+    },
+    {
+      "image": "resized_50.png",
+      "sha256_same_as_reference": false,
+      "hash_a": "d6a8295554aa2b5454aa2d5454aa295564aa2a55d728abf5a0e797f892ffc2af",
+      "hash_b": "d6a8295554aa2b5454aa2d5454aa295564aa2a55d728abf5a8e797f892dfc2af",
+      "hash_bits": 256,
+      "distance": 2,
+      "distance_fraction": 0.0078,
+      "similarity": 0.9922,
+      "verdict": "near_duplicate"
+    },
+    {
+      "image": "unrelated_image.png",
+      "sha256_same_as_reference": false,
+      "hash_a": "d6a8295554aa2b5454aa2d5454aa295564aa2a55d728abf5a0e797f892ffc2af",
+      "hash_b": "fcab948916946ebe6954c9746f3668948956976bb689b49915f287626a9d4c94",
+      "hash_bits": 256,
+      "distance": 130,
+      "distance_fraction": 0.5078,
+      "similarity": 0.4922,
+      "verdict": "different"
+    }
+  ]
+}
