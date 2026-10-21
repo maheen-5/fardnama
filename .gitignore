@@ -230,3 +230,5 @@ deployment/secrets/
 deployment/ipfs/swarm.key
 *.pem
 
+
+!frontend/lib/
