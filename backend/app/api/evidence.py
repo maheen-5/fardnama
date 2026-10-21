@@ -12,6 +12,7 @@ from PIL import Image, UnidentifiedImageError
 from app.config import get_settings
 from app.services.hashing import sha256_bytes
 from app.services.ocr import extract_text_from_image_bytes
+from app.services.storage import LocalStorage
 
 router = APIRouter(tags=["evidence"])
 
@@ -105,9 +106,7 @@ async def upload_evidence(
 
     # Preserve the original upload byte-for-byte. Avoid using user filenames as paths.
     evidence_id = str(uuid.uuid4())
-    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-    stored_path = UPLOAD_DIR / f"{evidence_id}{extension}"
-    stored_path.write_bytes(content)
+    LocalStorage(UPLOAD_DIR).save(evidence_id, extension, content)
 
     return {
         "evidence_id": evidence_id,
