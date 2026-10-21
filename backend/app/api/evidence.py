@@ -3,23 +3,22 @@
 from __future__ import annotations
 
 import io
-import os
 import uuid
 from pathlib import Path
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from PIL import Image, UnidentifiedImageError
 
+from app.config import get_settings
 from app.services.hashing import sha256_bytes
 from app.services.ocr import extract_text_from_image_bytes
 
 router = APIRouter(tags=["evidence"])
 
 # Local development storage. Set FARDNAMA_UPLOAD_DIR to a protected location in deployment.
-UPLOAD_DIR = Path(os.getenv("FARDNAMA_UPLOAD_DIR", "data/evidence"))
-MAX_UPLOAD_BYTES = int(
-    os.getenv("FARDNAMA_MAX_UPLOAD_BYTES", str(10 * 1024 * 1024))
-)
+_settings = get_settings()
+UPLOAD_DIR = _settings.upload_dir
+MAX_UPLOAD_BYTES = _settings.max_upload_bytes
 
 # These are the file types in the current core scope. OCR is performed on supported images.
 ALLOWED_EXTENSIONS = {
