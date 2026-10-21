@@ -13,6 +13,7 @@ class Settings:
 
     upload_dir: Path
     max_upload_bytes: int
+    max_image_pixels: int
     cors_origins: list[str]
     app_env: str
     tesseract_cmd: Optional[str]
@@ -36,6 +37,9 @@ def get_settings() -> Settings:
         upload_dir=Path(os.getenv("FARDNAMA_UPLOAD_DIR", "data/evidence")),
         max_upload_bytes=int(
             os.getenv("FARDNAMA_MAX_UPLOAD_BYTES", "10485760")
+        ),
+        max_image_pixels=int(
+            os.getenv("FARDNAMA_MAX_IMAGE_PIXELS", "40000000")
         ),
         cors_origins=cors_origins,
         app_env=app_env,

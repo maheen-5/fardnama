@@ -12,7 +12,7 @@ from pathlib import Path
 
 from fastapi import APIRouter, File, Form, HTTPException, Query, Response, UploadFile
 
-from app.api.evidence import IMAGE_EXTENSIONS, MAX_UPLOAD_BYTES
+from app.api.evidence import IMAGE_EXTENSIONS, MAX_UPLOAD_BYTES, enforce_pixel_limit
 from app.services.ela import DEFAULT_QUALITY, analyse, analyse_to_png
 from app.services.hashing import sha256_bytes
 from app.services.phash import DEFAULT_HASH_SIZE, compare_images, phash_bytes
@@ -46,6 +46,7 @@ async def _read_image(upload: UploadFile) -> bytes:
         raise HTTPException(
             status_code=413,
             detail=f"'{name}' exceeds the {MAX_UPLOAD_BYTES}-byte upload limit.")
+    enforce_pixel_limit(content)
     return content
 
 

@@ -163,3 +163,13 @@ def test_api_single_hash_supports_64_bit():
                        files={"file": ("a.png", ORIGINAL, "image/png")})
     assert resp.status_code == 200
     assert resp.json()["hash_bits"] == 64 and len(resp.json()["phash"]) == 16
+
+
+def test_forensics_rejects_too_many_pixels(monkeypatch):
+    from app.api import evidence as evidence_api
+    monkeypatch.setattr(evidence_api, "MAX_IMAGE_PIXELS", 100)
+    small = to_bytes(Image.new("RGB", (20, 20), "white"), "PNG")
+    resp = client.post("/api/forensics/phash", data={"consent": "true"},
+                       files={"file": ("bomb.png", small, "image/png")})
+    assert resp.status_code == 413
+    assert resp.json()["detail"] == "Image exceeds the pixel limit"
