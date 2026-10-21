@@ -1,0 +1,222 @@
+{
+  "generated": "2026-10-20T21:28:22",
+  "quality": 90,
+  "images": [
+    {
+      "image": "jpeg_original.jpg",
+      "panel": "ela/jpeg_original_ela_panel.png",
+      "width": 540,
+      "height": 960,
+      "input_format": "JPEG",
+      "quality": 90,
+      "mean_error": 0.143,
+      "p99_error": 3.0,
+      "max_error": 11,
+      "block_size": 16,
+      "brightest_blocks": [
+        {
+          "x": 304,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 3
+        },
+        {
+          "x": 288,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 3
+        },
+        {
+          "x": 272,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 3
+        },
+        {
+          "x": 272,
+          "y": 32,
+          "w": 16,
+          "h": 16,
+          "mean_error": 3
+        },
+        {
+          "x": 256,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 3
+        }
+      ],
+      "note": "Bright areas are worth a closer look; they are not proof of editing. Compare them with similar content in the same image."
+    },
+    {
+      "image": "jpeg_resaved.jpg",
+      "panel": "ela/jpeg_resaved_ela_panel.png",
+      "width": 540,
+      "height": 960,
+      "input_format": "JPEG",
+      "quality": 90,
+      "mean_error": 0.086,
+      "p99_error": 1.0,
+      "max_error": 8,
+      "block_size": 16,
+      "brightest_blocks": [
+        {
+          "x": 272,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 2
+        },
+        {
+          "x": 256,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 2
+        },
+        {
+          "x": 256,
+          "y": 32,
+          "w": 16,
+          "h": 16,
+          "mean_error": 2
+        },
+        {
+          "x": 240,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 2
+        },
+        {
+          "x": 224,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 2
+        }
+      ],
+      "note": "Bright areas are worth a closer look; they are not proof of editing. Compare them with similar content in the same image."
+    },
+    {
+      "image": "jpeg_edited.jpg",
+      "panel": "ela/jpeg_edited_ela_panel.png",
+      "width": 540,
+      "height": 960,
+      "input_format": "JPEG",
+      "quality": 90,
+      "mean_error": 0.096,
+      "p99_error": 2.0,
+      "max_error": 8,
+      "block_size": 16,
+      "brightest_blocks": [
+        {
+          "x": 272,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 2
+        },
+        {
+          "x": 256,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 2
+        },
+        {
+          "x": 256,
+          "y": 32,
+          "w": 16,
+          "h": 16,
+          "mean_error": 2
+        },
+        {
+          "x": 240,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 2
+        },
+        {
+          "x": 224,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 2
+        }
+      ],
+      "note": "Bright areas are worth a closer look; they are not proof of editing. Compare them with similar content in the same image."
+    },
+    {
+      "image": "original.png",
+      "panel": "ela/original_ela_panel.png",
+      "width": 540,
+      "height": 960,
+      "input_format": "PNG",
+      "quality": 90,
+      "mean_error": 0.739,
+      "p99_error": 9.0,
+      "max_error": 32,
+      "block_size": 16,
+      "brightest_blocks": [
+        {
+          "x": 304,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 8
+        },
+        {
+          "x": 288,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 7
+        },
+        {
+          "x": 176,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 7
+        },
+        {
+          "x": 160,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 7
+        },
+        {
+          "x": 128,
+          "y": 48,
+          "w": 16,
+          "h": 16,
+          "mean_error": 7
+        }
+      ],
+      "note": "Input is PNG, not JPEG: a lossless image has no compression history, so ELA mostly shows edges and colours here. Bright areas are worth a closer look; they are not proof of editing. Compare them with similar content in the same image."
+    }
+  ],
+  "edit_check": [
+    {
+      "image": "jpeg_resaved.jpg",
+      "edited_message_error": 0.134,
+      "other_messages_avg_error": 0.066,
+      "other_messages_max_error": 0.14,
+      "ratio": 2.05
+    },
+    {
+      "image": "jpeg_edited.jpg",
+      "edited_message_error": 0.267,
+      "other_messages_avg_error": 0.066,
+      "other_messages_max_error": 0.14,
+      "ratio": 4.08
+    }
+  ]
+}

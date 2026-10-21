@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.evidence import router as evidence_router
+from app.api.forensics import router as forensics_router
 from app.services.ocr import ocr_status
 
 app = FastAPI(
@@ -21,6 +22,7 @@ app.add_middleware(
 )
 
 app.include_router(evidence_router, prefix="/api")
+app.include_router(forensics_router, prefix="/api")
 
 
 @app.get("/health")
