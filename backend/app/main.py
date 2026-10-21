@@ -3,6 +3,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.evidence import router as evidence_router
+from app.api.forensics import router as forensics_router
+from app.config import get_settings
 from app.services.ocr import ocr_status
 
 app = FastAPI(
@@ -14,13 +16,14 @@ app = FastAPI(
 # Development convenience. Restrict this list to the real frontend origin before deployment.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=get_settings().cors_origins,
     allow_credentials=False,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
 app.include_router(evidence_router, prefix="/api")
+app.include_router(forensics_router, prefix="/api")
 
 
 @app.get("/health")

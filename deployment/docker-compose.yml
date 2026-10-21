@@ -1,0 +1,100 @@
+name: fardnama
+
+services:
+  # PostgreSQL 16 with pgvector for metadata
+  postgres:
+    image: pgvector/pgvector:pg16
+    env_file:
+      - ../.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - fardnama-net
+
+  # Redis 7 cache and job queue
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - fardnama-net
+
+  # Private Kubo IPFS node for evidence storage
+  ipfs:
+    image: ipfs/kubo:v0.32.1
+    environment:
+      LIBP2P_FORCE_PNET: "1"
+      IPFS_PROFILE: server
+    volumes:
+      - ipfsdata:/data/ipfs
+      - ./ipfs/swarm.key:/data/ipfs/swarm.key:ro
+      - ./ipfs/init.sh:/container-init.d/001-private.sh:ro
+    restart: unless-stopped
+    networks:
+      - fardnama-net
+
+  # Local Ethereum dev chain for EvidenceRegistry
+  ethereum:
+    image: ghcr.io/foundry-rs/foundry:stable
+    entrypoint:
+      ["anvil", "--host", "0.0.0.0", "--port", "8545", "--chain-id", "31337", "--state", "/anvil/state.json"]
+    volumes:
+      - anvildata:/anvil
+    restart: unless-stopped
+    networks:
+      - fardnama-net
+
+  # FastAPI backend service
+  backend:
+    image: ghcr.io/maheen-5/fardnama-backend:${BACKEND_TAG:-latest}
+    build:
+      context: ../backend
+    env_file:
+      - ../.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ipfs:
+        condition: service_started
+      ethereum:
+        condition: service_started
+    secrets:
+      - fardnama_kek
+      - registrar_key
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - fardnama-net
+
+secrets:
+  fardnama_kek:
+    file: ./secrets/fardnama_kek
+  registrar_key:
+    file: ./secrets/registrar_key
+
+volumes:
+  pgdata:
+  redisdata:
+  ipfsdata:
+  anvildata:
+
+networks:
+  fardnama-net:
+    driver: bridge
