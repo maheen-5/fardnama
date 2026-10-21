@@ -152,3 +152,31 @@ jobs:
         run: |
           npm ci
           npx hardhat test
+
+  deployment:
+    name: Deployment config (compose + shell)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Create local deployment secrets and env
+        run: |
+          cp .env.example .env
+          mkdir -p deployment/secrets deployment/ipfs
+          : > deployment/secrets/fardnama_kek
+          : > deployment/secrets/registrar_key
+          : > deployment/ipfs/swarm.key
+          mkdir -p backend
+
+      - name: Validate docker compose
+        run: docker compose -f deployment/docker-compose.yml config --quiet
+
+      - name: Install shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Shellcheck deployment scripts
+        run: |
+          shellcheck deployment/ipfs/init.sh deployment/scripts/gen-secrets.sh
