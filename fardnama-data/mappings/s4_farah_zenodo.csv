@@ -1,0 +1,8 @@
+original_label,meaning,target_label,note
+NONE,No abuse,Neutral,
+THREAT,Threat,Threat,only 91 rows; some are political warnings
+INSULT,Insult,Harassment,coarse
+NAMECALLING,Name-calling,Harassment,coarse
+OFFENSIVE,Offensive,Harassment,coarse
+PROFANE,Profane,Harassment,coarse
+CURSE,Curse,AMBIGUOUS,76 rows; excluded from training

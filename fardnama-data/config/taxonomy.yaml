@@ -1,0 +1,102 @@
+# FardNama — label taxonomy config
+# Source of truth for humans: FardNama_Label_Taxonomy_Final (owner: M. Noor Ul Azeem, 23i-2118)
+# This file holds only what the code needs. Per-source label mappings live in mappings/*.csv.
+# Change a rule here -> bump `version` -> rebuild the dataset as the matching data/processed/v<version>/.
+
+version: 1
+# Label "None" was renamed to "Neutral" on 2026-10-18: pandas reads the text None in a CSV as a missing value.
+last_updated: "2026-10-13"
+scheme: single_label        # Section 2: dominant category for the SVM baseline (multi-label planned for the SLM stage)
+
+# Section 1 — the five target categories. Scripts must reject any label not listed here
+# (plus the special AMBIGUOUS tag below).
+labels:
+  - id: Threat
+    definition: "Explicit or implied statement of intent to cause harm: physical, reputational, financial, or otherwise."
+  - id: Doxxing
+    definition: "Sharing, or threatening to share, someone's private or identifying information without consent."
+  - id: Hate_speech
+    definition: "Content attacking a person or group based on a protected characteristic (religion, gender, ethnicity, caste, etc.)."
+  - id: Harassment
+    definition: "Repeated or targeted unwanted contact or comments directed at a specific person, intended to upset, intimidate, or demean."
+  - id: Neutral
+    definition: "No harassment-related content present."
+
+# Section 2 — when one sample carries several labels, keep the first one found in this list.
+priority: [Threat, Doxxing, Hate_speech, Harassment, Neutral]
+
+# Section 3 — original labels that do not map cleanly to one category.
+ambiguous:
+  tag: AMBIGUOUS
+  use_in_training: false
+  rule: "Original label does not map cleanly to one of the five categories; tag for review instead of forcing it into a bucket."
+
+# Section 3 — rows kept out of training but used as an extra evaluation set.
+hard_negative_sets:
+  - name: casual_profanity
+    source: s5_rizwan
+    original_labels: ["4"]          # Profane/Untargeted
+    purpose: "Casual profanity a keyword approach would wrongly flag."
+
+# Section 4 / 6 — training and reporting rules for the baseline.
+baseline:
+  class_weight: balanced
+  report_per: [class, language, source]
+  report_with_and_without: [s1_roman_urdu_abuse]   # suspected synthetic, unconfirmed
+  split:
+    method: stratified            # stratify on label + language
+    stratify_on: [label, language]
+    ratios: {train: 0.8, val: 0.1, test: 0.1}
+    seed: 42
+  dedupe:
+    within_source: done
+    cross_source: done      # harmonize/merge_split.py; 0 duplicates found across sources in v1
+
+# Sources — status and metadata only. The label mapping for each one is in its CSV.
+sources:
+  - id: s1_roman_urdu_abuse
+    name: "Roman Urdu Cyber Abuse Dataset (Kaggle, hassan7838)"
+    language: roman_urdu
+    status: used
+    mapping_file: mappings/s1_roman_urdu_abuse.csv
+    license: TODO                   # fill in from the Kaggle page
+  - id: s2_das_fire2021
+    name: "Das, Banerjee & Saha (2021), FIRE 2021 HASOC Urdu"
+    status: excluded
+    reason: "Paper only; corpus not located."
+  - id: s3_wiki_aggression
+    name: "Cyberbullying Dataset (Kaggle, saurabhshahane), aggression_parsed_dataset.csv"
+    language: english
+    status: used
+    mapping_file: mappings/s3_wiki_aggression.csv
+    license: TODO                   # fill in from the Kaggle page
+  - id: s4_farah_zenodo
+    name: "Farah (2024), Cyberbullying Data, Zenodo"
+    language: urdu_script
+    status: used
+    mapping_file: mappings/s4_farah_zenodo.csv
+    license: "CC-BY 4.0 (credit Farah 2024)"
+    notes: "Text already preprocessed (stopwords removed, lemmatized). Train/test overlap not yet checked."
+  - id: s5_rizwan
+    name: "Rizwan, Shakeel & Karim (2020), EMNLP, Roman Urdu Task 2"
+    language: roman_urdu
+    status: used
+    mapping_file: mappings/s5_rizwan.csv
+    license: "MIT (credit M. Haroon Shakeel 2020)"
+  - id: s6_dewani_2023
+    name: "Dewani et al. (2023), Applied Sciences"
+    status: excluded
+    reason: "Paper only; corpus not located."
+  - id: s7_gbiamgaurav
+    name: "Cyberbullying Detection (Kaggle, gbiamgaurav)"
+    status: excluded
+    reason: "Duplicate of s3_wiki_aggression."
+  - id: s8_dzgzp4d7
+    name: "Untitled source (dzgzp4d7)"
+    status: excluded
+    reason: "Link unresolved."
+
+# Section 6 — open decisions. Scripts should not assume an answer until these are filled in.
+open_decisions:
+  doxxing_data: undecided           # no labelled rows in any source
+  inference_preprocessing: undecided  # s4 is preprocessed, OCR output will be raw
