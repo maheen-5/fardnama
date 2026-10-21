@@ -138,3 +138,19 @@ def test_missing_tesseract_is_503_not_a_decode_error(tmp_path, monkeypatch):
     assert response.status_code == 503
     assert "Tesseract" in response.json()["detail"]
     assert list(tmp_path.iterdir()) == []
+
+
+def test_upload_rejects_too_many_pixels(tmp_path, monkeypatch):
+    monkeypatch.setattr(evidence_api, "UPLOAD_DIR", tmp_path)
+    monkeypatch.setattr(evidence_api, "MAX_IMAGE_PIXELS", 100)
+    buffer = io.BytesIO()
+    Image.new("RGB", (20, 20), "white").save(buffer, format="PNG")
+
+    response = client.post(
+        "/api/evidence/upload",
+        data={"consent": "true"},
+        files={"file": ("bomb.png", buffer.getvalue(), "image/png")},
+    )
+    assert response.status_code == 413
+    assert response.json()["detail"] == "Image exceeds the pixel limit"
+    assert list(tmp_path.iterdir()) == []

@@ -22,6 +22,12 @@ _settings = get_settings()
 UPLOAD_DIR = _settings.upload_dir
 MAX_UPLOAD_BYTES = _settings.max_upload_bytes
 
+# A small compressed file can declare a huge canvas (decompression bomb), so pixel count is
+# limited separately from file size. Pillow's own guard uses the same limit.
+MAX_IMAGE_PIXELS = _settings.max_image_pixels
+Image.MAX_IMAGE_PIXELS = MAX_IMAGE_PIXELS
+PIXEL_LIMIT_DETAIL = "Image exceeds the pixel limit"
+
 # These are the file types in the current core scope. OCR is performed on supported images.
 ALLOWED_EXTENSIONS = {
     ".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tif", ".tiff",
@@ -30,6 +36,23 @@ ALLOWED_EXTENSIONS = {
 IMAGE_EXTENSIONS = {
     ".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tif", ".tiff",
 }
+
+
+def enforce_pixel_limit(content: bytes) -> None:
+    """Raise HTTP 413 if the image declares more than MAX_IMAGE_PIXELS pixels.
+
+    Image.open only reads the header, so this runs before any full decode. Bytes that are
+    not a readable image are left to the caller's decode step to report.
+    """
+    try:
+        with Image.open(io.BytesIO(content)) as image:
+            width, height = image.size
+    except Image.DecompressionBombError as exc:
+        raise HTTPException(status_code=413, detail=PIXEL_LIMIT_DETAIL) from exc
+    except (UnidentifiedImageError, OSError, ValueError):
+        return
+    if width * height > MAX_IMAGE_PIXELS:
+        raise HTTPException(status_code=413, detail=PIXEL_LIMIT_DETAIL)
 
 
 @router.post("/evidence/upload", status_code=201)
@@ -77,6 +100,8 @@ async def upload_evidence(
     extracted_text = None
     ocr_status = "not_applicable"
     if extension in IMAGE_EXTENSIONS:
+        enforce_pixel_limit(content)
+
         # Step 1: a decoding failure is reported as HTTP 400.
         try:
             with Image.open(io.BytesIO(content)) as image:

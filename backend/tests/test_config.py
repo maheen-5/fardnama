@@ -21,6 +21,7 @@ def test_settings_defaults(monkeypatch):
         "CORS_ORIGINS",
         "FARDNAMA_UPLOAD_DIR",
         "FARDNAMA_MAX_UPLOAD_BYTES",
+        "FARDNAMA_MAX_IMAGE_PIXELS",
         "TESSERACT_CMD",
     ):
         monkeypatch.delenv(name, raising=False)
@@ -29,6 +30,7 @@ def test_settings_defaults(monkeypatch):
 
     assert settings.upload_dir == Path("data/evidence")
     assert settings.max_upload_bytes == 10485760
+    assert settings.max_image_pixels == 40_000_000
     assert settings.app_env == "development"
     assert settings.cors_origins == ["*"]
     assert settings.tesseract_cmd is None
@@ -38,6 +40,7 @@ def test_settings_environment_overrides(monkeypatch):
     monkeypatch.setenv("APP_ENV", "production")
     monkeypatch.setenv("FARDNAMA_UPLOAD_DIR", "/srv/evidence")
     monkeypatch.setenv("FARDNAMA_MAX_UPLOAD_BYTES", "2048")
+    monkeypatch.setenv("FARDNAMA_MAX_IMAGE_PIXELS", "1000")
     monkeypatch.setenv("TESSERACT_CMD", "/usr/bin/tesseract")
 
     get_settings.cache_clear()
@@ -46,6 +49,7 @@ def test_settings_environment_overrides(monkeypatch):
     assert settings.app_env == "production"
     assert settings.upload_dir == Path("/srv/evidence")
     assert settings.max_upload_bytes == 2048
+    assert settings.max_image_pixels == 1000
     assert settings.tesseract_cmd == "/usr/bin/tesseract"
     assert settings.cors_origins == []
 
