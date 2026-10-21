@@ -10,6 +10,7 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from PIL import Image, UnidentifiedImageError
 
 from app.config import get_settings
+from app.models import Evidence
 from app.services.hashing import sha256_bytes
 from app.services.ocr import extract_text_from_image_bytes
 from app.services.storage import LocalStorage
@@ -106,14 +107,25 @@ async def upload_evidence(
 
     # Preserve the original upload byte-for-byte. Avoid using user filenames as paths.
     evidence_id = str(uuid.uuid4())
-    LocalStorage(UPLOAD_DIR).save(evidence_id, extension, content)
+    storage_ref = LocalStorage(UPLOAD_DIR).save(evidence_id, extension, content)
+    evidence = Evidence(
+        evidence_id=evidence_id,
+        case_id=None,
+        filename=original_name,
+        extension=extension,
+        size_bytes=len(content),
+        sha256_original=original_sha256,
+        sha256_copy=None,
+        storage_ref=storage_ref,
+        ocr_status=ocr_status,
+    )
 
     return {
-        "evidence_id": evidence_id,
-        "filename": original_name,
-        "size_bytes": len(content),
-        "sha256": original_sha256,
-        "ocr_status": ocr_status,
+        "evidence_id": evidence.evidence_id,
+        "filename": evidence.filename,
+        "size_bytes": evidence.size_bytes,
+        "sha256": evidence.sha256_original,
+        "ocr_status": evidence.ocr_status,
         "extracted_text": extracted_text,
         "message": "Evidence uploaded; original bytes stored unchanged.",
     }
