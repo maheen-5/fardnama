@@ -1,0 +1,3 @@
+original_label,meaning,target_label,note
+H,Harassing / abusive (inferred from samples),Harassment,"coarse, low severity"
+O,Other / non-abusive (inferred from samples),Neutral,

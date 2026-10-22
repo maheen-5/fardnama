@@ -1,0 +1,447 @@
+{
+  "config": "all",
+  "dataset": "v1",
+  "excluded_sources": [],
+  "rows": {
+    "train": 111884,
+    "val": 13986,
+    "test": 13986
+  },
+  "labels": [
+    "Threat",
+    "Hate_speech",
+    "Harassment",
+    "Neutral"
+  ],
+  "tuning": [
+    {
+      "C": 0.1,
+      "val_macro_f1": 0.7197,
+      "seconds": 299.7
+    },
+    {
+      "C": 0.3,
+      "val_macro_f1": 0.7404,
+      "seconds": 333.8
+    },
+    {
+      "C": 1.0,
+      "val_macro_f1": 0.7404,
+      "seconds": 246.5
+    },
+    {
+      "C": 3.0,
+      "val_macro_f1": 0.7407,
+      "seconds": 270.4
+    }
+  ],
+  "best_C": 3.0,
+  "test_macro_f1": 0.7729,
+  "test_report": {
+    "Threat": {
+      "precision": 1.0,
+      "recall": 0.4444444444444444,
+      "f1-score": 0.6153846153846154,
+      "support": 9.0
+    },
+    "Hate_speech": {
+      "precision": 0.796875,
+      "recall": 0.6845637583892618,
+      "f1-score": 0.7364620938628159,
+      "support": 149.0
+    },
+    "Harassment": {
+      "precision": 0.8021365536460753,
+      "recall": 0.7614638447971781,
+      "f1-score": 0.7812712056095906,
+      "support": 2268.0
+    },
+    "Neutral": {
+      "precision": 0.9526536193487736,
+      "recall": 0.9642733564013841,
+      "f1-score": 0.9584282704956795,
+      "support": 11560.0
+    },
+    "accuracy": 0.9280709280709281,
+    "macro avg": {
+      "precision": 0.8879162932487121,
+      "recall": 0.7136863510080671,
+      "f1-score": 0.7728865463381753,
+      "support": 13986.0
+    },
+    "weighted avg": {
+      "precision": 0.926616324777715,
+      "recall": 0.9280709280709281,
+      "f1-score": 0.9271146299711589,
+      "support": 13986.0
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "Threat",
+      "Hate_speech",
+      "Harassment",
+      "Neutral"
+    ],
+    "matrix": [
+      [
+        4,
+        0,
+        3,
+        2
+      ],
+      [
+        0,
+        102,
+        24,
+        23
+      ],
+      [
+        0,
+        12,
+        1727,
+        529
+      ],
+      [
+        0,
+        14,
+        399,
+        11147
+      ]
+    ]
+  },
+  "by_language": {
+    "english": {
+      "rows": 11528,
+      "macro_f1": 0.8581,
+      "per_class": {
+        "Harassment": {
+          "precision": 0.7871545929798357,
+          "recall": 0.717494894486045,
+          "f1-score": 0.7507122507122507,
+          "support": 1469.0
+        },
+        "Neutral": {
+          "precision": 0.9593639575971732,
+          "recall": 0.9716671637339696,
+          "f1-score": 0.9654763668691658,
+          "support": 10059.0
+        },
+        "micro avg": {
+          "precision": 0.9393597640322721,
+          "recall": 0.9392782789729355,
+          "f1-score": 0.9393190197354153,
+          "support": 11528.0
+        },
+        "macro avg": {
+          "precision": 0.8732592752885044,
+          "recall": 0.8445810291100073,
+          "f1-score": 0.8580943087907082,
+          "support": 11528.0
+        },
+        "weighted avg": {
+          "precision": 0.9374195130601444,
+          "recall": 0.9392782789729355,
+          "f1-score": 0.9381092184796352,
+          "support": 11528.0
+        }
+      }
+    },
+    "roman_urdu": {
+      "rows": 1319,
+      "macro_f1": 0.8464,
+      "per_class": {
+        "Hate_speech": {
+          "precision": 0.8031496062992126,
+          "recall": 0.6845637583892618,
+          "f1-score": 0.7391304347826086,
+          "support": 149.0
+        },
+        "Harassment": {
+          "precision": 0.8769230769230769,
+          "recall": 0.8788546255506607,
+          "f1-score": 0.8778877887788779,
+          "support": 454.0
+        },
+        "Neutral": {
+          "precision": 0.9090909090909091,
+          "recall": 0.9357541899441341,
+          "f1-score": 0.9222298692360633,
+          "support": 716.0
+        },
+        "accuracy": 0.8877937831690674,
+        "macro avg": {
+          "precision": 0.8630545307710662,
+          "recall": 0.8330575246280189,
+          "f1-score": 0.8464160309325166,
+          "support": 1319.0
+        },
+        "weighted avg": {
+          "precision": 0.8860511441779761,
+          "recall": 0.8877937831690674,
+          "f1-score": 0.8862836067181504,
+          "support": 1319.0
+        }
+      }
+    },
+    "urdu_script": {
+      "rows": 1139,
+      "macro_f1": 0.7648,
+      "per_class": {
+        "Threat": {
+          "precision": 1.0,
+          "recall": 0.4444444444444444,
+          "f1-score": 0.6153846153846154,
+          "support": 9.0
+        },
+        "Harassment": {
+          "precision": 0.7632311977715878,
+          "recall": 0.7942028985507247,
+          "f1-score": 0.7784090909090909,
+          "support": 345.0
+        },
+        "Neutral": {
+          "precision": 0.9059278350515464,
+          "recall": 0.8955414012738854,
+          "f1-score": 0.9007046764894299,
+          "support": 785.0
+        },
+        "accuracy": 0.8612818261633012,
+        "macro avg": {
+          "precision": 0.8897196776077113,
+          "recall": 0.7113962480896848,
+          "f1-score": 0.7648327942610454,
+          "support": 1139.0
+        },
+        "weighted avg": {
+          "precision": 0.8634487390225299,
+          "recall": 0.8612818261633012,
+          "f1-score": 0.8614071720336264,
+          "support": 1139.0
+        }
+      }
+    }
+  },
+  "by_source": {
+    "s1_roman_urdu_abuse": {
+      "rows": 472,
+      "macro_f1": 1.0,
+      "per_class": {
+        "Harassment": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 244.0
+        },
+        "Neutral": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 228.0
+        },
+        "accuracy": 1.0,
+        "macro avg": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 472.0
+        },
+        "weighted avg": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 472.0
+        }
+      }
+    },
+    "s3_wiki_aggression": {
+      "rows": 11528,
+      "macro_f1": 0.8581,
+      "per_class": {
+        "Harassment": {
+          "precision": 0.7871545929798357,
+          "recall": 0.717494894486045,
+          "f1-score": 0.7507122507122507,
+          "support": 1469.0
+        },
+        "Neutral": {
+          "precision": 0.9593639575971732,
+          "recall": 0.9716671637339696,
+          "f1-score": 0.9654763668691658,
+          "support": 10059.0
+        },
+        "micro avg": {
+          "precision": 0.9393597640322721,
+          "recall": 0.9392782789729355,
+          "f1-score": 0.9393190197354153,
+          "support": 11528.0
+        },
+        "macro avg": {
+          "precision": 0.8732592752885044,
+          "recall": 0.8445810291100073,
+          "f1-score": 0.8580943087907082,
+          "support": 11528.0
+        },
+        "weighted avg": {
+          "precision": 0.9374195130601444,
+          "recall": 0.9392782789729355,
+          "f1-score": 0.9381092184796352,
+          "support": 11528.0
+        }
+      }
+    },
+    "s4_farah_zenodo": {
+      "rows": 1139,
+      "macro_f1": 0.7648,
+      "per_class": {
+        "Threat": {
+          "precision": 1.0,
+          "recall": 0.4444444444444444,
+          "f1-score": 0.6153846153846154,
+          "support": 9.0
+        },
+        "Harassment": {
+          "precision": 0.7632311977715878,
+          "recall": 0.7942028985507247,
+          "f1-score": 0.7784090909090909,
+          "support": 345.0
+        },
+        "Neutral": {
+          "precision": 0.9059278350515464,
+          "recall": 0.8955414012738854,
+          "f1-score": 0.9007046764894299,
+          "support": 785.0
+        },
+        "accuracy": 0.8612818261633012,
+        "macro avg": {
+          "precision": 0.8897196776077113,
+          "recall": 0.7113962480896848,
+          "f1-score": 0.7648327942610454,
+          "support": 1139.0
+        },
+        "weighted avg": {
+          "precision": 0.8634487390225299,
+          "recall": 0.8612818261633012,
+          "f1-score": 0.8614071720336264,
+          "support": 1139.0
+        }
+      }
+    },
+    "s5_rizwan": {
+      "rows": 847,
+      "macro_f1": 0.7874,
+      "per_class": {
+        "Hate_speech": {
+          "precision": 0.8031496062992126,
+          "recall": 0.6845637583892618,
+          "f1-score": 0.7391304347826086,
+          "support": 149.0
+        },
+        "Harassment": {
+          "precision": 0.7345971563981043,
+          "recall": 0.7380952380952381,
+          "f1-score": 0.7363420427553444,
+          "support": 210.0
+        },
+        "Neutral": {
+          "precision": 0.8683693516699411,
+          "recall": 0.9057377049180327,
+          "f1-score": 0.8866599799398195,
+          "support": 488.0
+        },
+        "accuracy": 0.8252656434474617,
+        "macro avg": {
+          "precision": 0.8020387047890859,
+          "recall": 0.7761322338008442,
+          "f1-score": 0.7873774858259242,
+          "support": 847.0
+        },
+        "weighted avg": {
+          "precision": 0.8237295605633008,
+          "recall": 0.8252656434474617,
+          "f1-score": 0.8234384108286457,
+          "support": 847.0
+        }
+      }
+    }
+  },
+  "top_features": {
+    "Harassment": [
+      "char__uck",
+      "word__لن",
+      "char__fuc",
+      "word__ass",
+      "char__fuck",
+      "word__امپورٹڈ حکومت",
+      "word__شاپر",
+      "word__please bhadwi",
+      "word__نکما",
+      "word__bc",
+      "word__idiot",
+      "word__کمینہ",
+      "word__fuck",
+      "word__you",
+      "word__bahanchod"
+    ],
+    "Hate_speech": [
+      "word__halala",
+      "word__khusray",
+      "word__yahodi",
+      "word__athiest",
+      "word__yahoodi",
+      "char__ rand",
+      "word__randi",
+      "word__kanjeri",
+      "word__hijra",
+      "word__halala ki",
+      "char__ hij",
+      "char__ ran",
+      "word__ghasti",
+      "word__kanjari",
+      "char__hij"
+    ],
+    "Neutral": [
+      "word__you pussy",
+      "word__eat shit",
+      "word__کسان",
+      "word__re little",
+      "word__my dick",
+      "word__are cunt",
+      "word__فون",
+      "word__marchagainstimportedgovt امپورٹڈ",
+      "word__trans",
+      "word__پاکستان بڑا",
+      "word__is now",
+      "word__am sorry",
+      "word__dick you",
+      "word__you hate",
+      "word__fat cunt"
+    ],
+    "Threat": [
+      "word__باعزت",
+      "word__تمہ",
+      "word__تمہ قتل",
+      "word__نہ ھو",
+      "word__گی",
+      "word__رکھنا دینا",
+      "word__آنکھ نکلنا",
+      "word__اگر عمران",
+      "word__لات",
+      "word__نکلنا دینا",
+      "word__استعفی دو",
+      "word__بعض",
+      "word__فرار",
+      "word__خان ایک",
+      "word__جانا سکنا"
+    ]
+  },
+  "hard_negatives": {
+    "rows": 582,
+    "predicted": {
+      "Harassment": 405,
+      "Neutral": 144,
+      "Hate_speech": 33
+    },
+    "false_alarm_rate": 0.7526
+  }
+}
