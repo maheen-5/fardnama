@@ -14,17 +14,31 @@ alert and example nearby places; it does not access location or message anyone.
 
 ## Run the app
 
-Install Flutter and its platform prerequisites, then in PowerShell:
+Install Flutter and its platform prerequisites, then from the repository root
+run in PowerShell:
 
 ```powershell
-cd frontend
+cd C:\Users\mahee\fardnama\frontend
 flutter pub get
-flutter run
 ```
 
-To run in Chrome, list available targets with `flutter devices`, then run
-`flutter run -d chrome`. For an Android emulator, start an emulator first and
-run `flutter run` (or specify the device ID shown by `flutter devices`).
+Run the web version in Chrome:
+
+```powershell
+flutter run -d chrome
+```
+
+Run the Windows desktop version:
+
+```powershell
+flutter run -d windows
+```
+
+Windows desktop builds require Visual Studio 2022 with the **Desktop
+development with C++** workload and a Windows 10/11 SDK. If Flutter reports
+that it cannot create plugin symlinks, enable Windows Developer Mode
+(`start ms-settings:developers`), restart the terminal, and rerun
+`flutter pub get`.
 
 Run the Flutter tests from this directory with:
 

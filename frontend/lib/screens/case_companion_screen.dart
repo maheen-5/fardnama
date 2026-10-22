@@ -239,16 +239,22 @@ class _CaseCompanionScreenState extends State<CaseCompanionScreen> {
             ),
           ),
           const SizedBox(height: 14),
-          CheckboxListTile(
-            contentPadding: EdgeInsets.zero,
-            controlAffinity: ListTileControlAffinity.leading,
-            activeColor: AppTheme.olive,
-            value: _acceptedNotice,
-            onChanged: (value) =>
-                setState(() => _acceptedNotice = value ?? false),
-            title: Text(
-              t('agreeNotice'),
-              style: const TextStyle(color: AppTheme.inkSoft, fontSize: 12.5),
+          Material(
+            color: Colors.transparent,
+            child: CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              controlAffinity: ListTileControlAffinity.leading,
+              activeColor: AppTheme.olive,
+              value: _acceptedNotice,
+              onChanged: (value) =>
+                  setState(() => _acceptedNotice = value ?? false),
+              title: Text(
+                t('agreeNotice'),
+                style: const TextStyle(
+                  color: AppTheme.inkSoft,
+                  fontSize: 12.5,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 4),
@@ -434,7 +440,16 @@ class _CaseCompanionScreenState extends State<CaseCompanionScreen> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [_brand(onDark: true), _languageSwitch(onDark: true)],
+            children: [
+              Flexible(
+                child: FittedBox(
+                  alignment: AlignmentDirectional.centerStart,
+                  fit: BoxFit.scaleDown,
+                  child: _brand(onDark: true),
+                ),
+              ),
+              _languageSwitch(onDark: true),
+            ],
           ),
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(44, 9, 0, 20),
@@ -1101,7 +1116,12 @@ class _CaseCompanionScreenState extends State<CaseCompanionScreen> {
   Widget _timelineStep() {
     final events = [
       ('Aug 28, 2026 · 9:14 PM', 'firstContact', 'firstContactDesc', false),
-      ('Aug 30, 2026 · 11:02 PM', 'messagesRepeat', 'messagesRepeatDesc', false),
+      (
+        'Aug 30, 2026 · 11:02 PM',
+        'messagesRepeat',
+        'messagesRepeatDesc',
+        false
+      ),
       ('Sep 1, 2026 · 8:47 PM', 'directThreat', 'directThreatDesc', true),
       ('Sep 2, 2026 · 7:20 PM', 'detailsShared', 'detailsSharedDesc', true),
     ];
@@ -1130,7 +1150,12 @@ class _CaseCompanionScreenState extends State<CaseCompanionScreen> {
   Widget _vaultStep() {
     final entries = [
       ('IMG_0231.png', 'addedWhatsApp', Icons.image_outlined, 'WhatsApp'),
-      ('instagram_export.json', 'addedInstagram', Icons.forum_outlined, 'Instagram'),
+      (
+        'instagram_export.json',
+        'addedInstagram',
+        Icons.forum_outlined,
+        'Instagram'
+      ),
       ('personal_notes.txt', 'addedNotes', Icons.description_outlined, 'Notes'),
     ];
     return Column(
@@ -1204,7 +1229,9 @@ class _CaseCompanionScreenState extends State<CaseCompanionScreen> {
                   onPressed: () => setState(() => _reportGenerated = true),
                   icon: const Icon(Icons.description_outlined),
                   label: Text(
-                    _reportGenerated ? t('reportGenerated') : t('generateReport'),
+                    _reportGenerated
+                        ? t('reportGenerated')
+                        : t('generateReport'),
                   ),
                 ),
               ],
@@ -1291,7 +1318,8 @@ class _CaseCompanionScreenState extends State<CaseCompanionScreen> {
               _ChatBubble(text: t('botIntro')),
               _ChatBubble(text: t('userQuestion'), isUser: true),
               _ChatBubble(
-                text: '${t('botAnswer')}\n\n${t('officeName')}\n${t('officeSub')}',
+                text:
+                    '${t('botAnswer')}\n\n${t('officeName')}\n${t('officeSub')}',
               ),
               if (_chatReply case final reply?)
                 _ChatBubble(text: reply, isUser: true),
@@ -1373,9 +1401,12 @@ class _CaseCompanionScreenState extends State<CaseCompanionScreen> {
             title: t('feelUnsafe'),
             child: Column(
               children: [
-                _FieldRow(label: t('nearestPolice'), value: t('shownAutomatically')),
-                _FieldRow(label: t('nearestFia'), value: t('shownAutomatically')),
-                _FieldRow(label: t('busySpace'), value: t('shownAutomatically')),
+                _FieldRow(
+                    label: t('nearestPolice'), value: t('shownAutomatically')),
+                _FieldRow(
+                    label: t('nearestFia'), value: t('shownAutomatically')),
+                _FieldRow(
+                    label: t('busySpace'), value: t('shownAutomatically')),
                 const SizedBox(height: 10),
                 Text(t('moveSafe'), style: _smallNoteStyle()),
               ],
@@ -1429,8 +1460,7 @@ class _CaseCompanionScreenState extends State<CaseCompanionScreen> {
   Widget _keyValueList(List<(String, String)> items) {
     return Column(
       children: [
-        for (final item in items)
-          _FieldRow(label: item.$1, value: item.$2),
+        for (final item in items) _FieldRow(label: item.$1, value: item.$2),
       ],
     );
   }
@@ -1486,7 +1516,8 @@ class _CaseCompanionScreenState extends State<CaseCompanionScreen> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: AppTheme.brick,
-            border: Border.all(color: AppTheme.brick.withOpacity(.42), width: 5),
+            border:
+                Border.all(color: AppTheme.brick.withOpacity(.42), width: 5),
             boxShadow: [
               BoxShadow(
                 color: AppTheme.brick.withOpacity(.28),
@@ -1683,15 +1714,9 @@ class _DemoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
       decoration: BoxDecoration(
         color: AppTheme.paper,
-        border: const BorderDirectional(
-          start: BorderSide(color: AppTheme.olive, width: 3),
-          top: BorderSide(color: AppTheme.line),
-          right: BorderSide(color: AppTheme.line),
-          bottom: BorderSide(color: AppTheme.line),
-        ),
+        border: Border.all(color: AppTheme.line),
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
@@ -1701,35 +1726,54 @@ class _DemoCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (title != null) ...[
-            Text(
-              title!,
-              style: const TextStyle(
-                color: AppTheme.bark,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(13),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(27, 22, 24, 22),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (title != null) ...[
+                    Text(
+                      title!,
+                      style: const TextStyle(
+                        color: AppTheme.bark,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 4),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 15),
+                        child: Text(
+                          subtitle!,
+                          style: const TextStyle(
+                            color: AppTheme.inkSoft,
+                            fontSize: 12.5,
+                          ),
+                        ),
+                      ),
+                    ] else
+                      const SizedBox(height: 12),
+                  ],
+                  child,
+                ],
               ),
             ),
-            if (subtitle != null) ...[
-              const SizedBox(height: 4),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 15),
-                child: Text(
-                  subtitle!,
-                  style: const TextStyle(
-                    color: AppTheme.inkSoft,
-                    fontSize: 12.5,
-                  ),
-                ),
+            const PositionedDirectional(
+              start: 0,
+              top: 0,
+              bottom: 0,
+              child: SizedBox(
+                width: 3,
+                child: ColoredBox(color: AppTheme.olive),
               ),
-            ] else
-              const SizedBox(height: 12),
+            ),
           ],
-          child,
-        ],
+        ),
       ),
     );
   }
@@ -1889,8 +1933,10 @@ class _ElaFindingRow extends StatelessWidget {
             spacing: 14,
             runSpacing: 4,
             children: [
-              _Metric(label: copy.call('meanError'), value: '${finding.meanError}'),
-              _Metric(label: copy.call('p99Error'), value: '${finding.p99Error}'),
+              _Metric(
+                  label: copy.call('meanError'), value: '${finding.meanError}'),
+              _Metric(
+                  label: copy.call('p99Error'), value: '${finding.p99Error}'),
               _Metric(label: 'Max', value: '${finding.maxError}'),
               _Metric(label: copy.call('editRatio'), value: ratio),
               _Metric(
@@ -1900,31 +1946,34 @@ class _ElaFindingRow extends StatelessWidget {
               ),
             ],
           ),
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            title: Text(
-              copy.call('brightestBlocks'),
-              style: const TextStyle(
-                color: AppTheme.oliveDeep,
-                fontSize: 11.5,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            children: [
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: Text(
-                  finding.brightestBlocks
-                      .map((block) =>
-                          '(${block.x}, ${block.y}) · ${block.meanError}')
-                      .join('     '),
-                  style: const TextStyle(
-                    color: AppTheme.inkSoft,
-                    fontSize: 11,
-                  ),
+          Material(
+            color: AppTheme.paper,
+            child: ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              title: Text(
+                copy.call('brightestBlocks'),
+                style: const TextStyle(
+                  color: AppTheme.oliveDeep,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ],
+              children: [
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    finding.brightestBlocks
+                        .map((block) =>
+                            '(${block.x}, ${block.y}) · ${block.meanError}')
+                        .join('     '),
+                    style: const TextStyle(
+                      color: AppTheme.inkSoft,
+                      fontSize: 11,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           const Divider(height: 18, color: AppTheme.line),
         ],
@@ -2046,20 +2095,35 @@ class _Recommendation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: AppTheme.sage2,
         borderRadius: BorderRadius.circular(10),
-        border: const BorderDirectional(
-          start: BorderSide(color: AppTheme.olive, width: 3),
-        ),
       ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: AppTheme.bark,
-          fontSize: 12.5,
-          height: 1.7,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(16, 14, 16, 14),
+              child: Text(
+                text,
+                style: const TextStyle(
+                  color: AppTheme.bark,
+                  fontSize: 12.5,
+                  height: 1.7,
+                ),
+              ),
+            ),
+            const PositionedDirectional(
+              start: 0,
+              top: 0,
+              bottom: 0,
+              child: SizedBox(
+                width: 3,
+                child: ColoredBox(color: AppTheme.olive),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -2459,7 +2523,9 @@ class _ChatBubble extends StatelessWidget {
       ),
     );
     return Align(
-      alignment: isUser ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
+      alignment: isUser
+          ? AlignmentDirectional.centerEnd
+          : AlignmentDirectional.centerStart,
       child: bubble,
     );
   }
