@@ -1,0 +1,6 @@
+original_label,meaning,target_label,note
+0,Abusive/Offensive,Harassment,coarse
+1,Normal,Neutral,
+2,Religious Hate,Hate_speech,
+3,Sexism,Hate_speech,
+4,Profane/Untargeted,AMBIGUOUS,582 rows; held out as hard-negative test set

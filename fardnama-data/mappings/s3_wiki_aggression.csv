@@ -1,0 +1,3 @@
+original_label,meaning,target_label,note
+1,Aggressive (oh_label),Harassment,"coarse; positives mix insults, slurs and self-harm incitement"
+0,Not aggressive (oh_label),Neutral,

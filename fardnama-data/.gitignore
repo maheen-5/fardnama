@@ -1,0 +1,10 @@
+# Data and trained models are large and are rebuilt by the scripts; keep them out of Git.
+data/raw/
+data/interim/
+data/processed/
+models/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
