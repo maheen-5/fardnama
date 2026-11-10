@@ -173,3 +173,40 @@ def test_forensics_rejects_too_many_pixels(monkeypatch):
                        files={"file": ("bomb.png", small, "image/png")})
     assert resp.status_code == 413
     assert resp.json()["detail"] == "Image exceeds the pixel limit"
+
+
+def test_forensics_rejects_oversize_file(monkeypatch):
+    """A file over the upload limit is refused before it is decoded.
+
+    The limit is enforced in app/api/forensics.py, which imported MAX_UPLOAD_BYTES from
+    evidence.py BY VALUE, so the patch has to be applied to the forensics module. Patching
+    evidence.MAX_UPLOAD_BYTES would leave the forensics copy untouched and the test would
+    pass for the wrong reason.
+    """
+    from app.api import forensics as forensics_api
+    monkeypatch.setattr(forensics_api, "MAX_UPLOAD_BYTES", 128)
+    resp = client.post("/api/forensics/phash", data={"consent": "true"},
+                       files={"file": ("big.png", ORIGINAL, "image/png")})
+    assert resp.status_code == 413
+    assert "upload limit" in resp.json()["detail"]
+
+
+def test_forensics_compare_rejects_oversize_file(monkeypatch):
+    from app.api import forensics as forensics_api
+    monkeypatch.setattr(forensics_api, "MAX_UPLOAD_BYTES", 128)
+    resp = client.post(
+        "/api/forensics/phash/compare",
+        data={"consent": "true"},
+        files={"file_a": ("a.png", ORIGINAL, "image/png"),
+               "file_b": ("b.png", ORIGINAL, "image/png")},
+    )
+    assert resp.status_code == 413
+
+
+def test_oversize_check_runs_before_decoding(monkeypatch):
+    """Size is checked before the bytes are decoded, so a huge broken file is still a 413."""
+    from app.api import forensics as forensics_api
+    monkeypatch.setattr(forensics_api, "MAX_UPLOAD_BYTES", 128)
+    resp = client.post("/api/forensics/phash", data={"consent": "true"},
+                       files={"file": ("broken.png", b"x" * 5000, "image/png")})
+    assert resp.status_code == 413
