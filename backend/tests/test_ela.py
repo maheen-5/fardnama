@@ -118,3 +118,22 @@ def test_api_ela_requires_consent_and_image():
                        files={"file": ("chat.jpg", SAMPLE, "image/jpeg")}).status_code == 400
     assert client.post("/api/forensics/ela", data={"consent": "true"},
                        files={"file": ("notes.txt", b"hello", "text/plain")}).status_code == 415
+
+
+def test_ela_rejects_oversize_file(monkeypatch):
+    """Size limit on the ELA endpoints. ELA allocates several full-size images, so an
+    oversized input must be refused before any decode (see Table 8.9, denial of service)."""
+    from app.api import forensics as forensics_api
+    monkeypatch.setattr(forensics_api, "MAX_UPLOAD_BYTES", 128)
+    resp = client.post("/api/forensics/ela", data={"consent": "true"},
+                       files={"file": ("chat.jpg", SAMPLE, "image/jpeg")})
+    assert resp.status_code == 413
+    assert "upload limit" in resp.json()["detail"]
+
+
+def test_ela_image_rejects_oversize_file(monkeypatch):
+    from app.api import forensics as forensics_api
+    monkeypatch.setattr(forensics_api, "MAX_UPLOAD_BYTES", 128)
+    resp = client.post("/api/forensics/ela/image", data={"consent": "true"},
+                       files={"file": ("chat.jpg", SAMPLE, "image/jpeg")})
+    assert resp.status_code == 413
